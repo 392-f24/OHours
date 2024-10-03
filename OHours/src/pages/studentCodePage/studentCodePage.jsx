@@ -1,6 +1,5 @@
 import React, { useState } from 'react'; 
-import studentService from '../../APIservices/studentServices';
-import { Button } from '../../components/ui/button';
+import studentService from '../services/studentService';
 
 const Alert = ({ children, className, ...props }) => (
   <div role="alert" className={`rounded-lg border p-4 ${className}`} {...props}>

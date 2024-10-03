@@ -3,7 +3,8 @@ import { Card, CardContent } from '@shadcn/ui';
 import { ScrollArea } from '@shadcn/ui';
 import { Button } from '@shadcn/ui';
 import { Checkbox } from '@shadcn/ui';
- 
+
+// Updated mock data to reflect student queue
 const mockQueueData = [
   { 
     id: 1, 
@@ -48,7 +49,7 @@ export default function QueueManagement() {
 
   return (
     <div className="h-screen flex flex-col">
-      Room Section
+      {/* Room Section */}
       <div className="p-4">
         <Card>
           <CardContent className="p-4">
