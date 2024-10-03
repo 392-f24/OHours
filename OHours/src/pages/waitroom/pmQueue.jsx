@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent } from '@shadcn/ui';
+import { ScrollArea } from '@shadcn/ui';
+import { Button } from '@shadcn/ui';
+import { Checkbox } from '@shadcn/ui';
 
 // Updated mock data to reflect student queue
 const mockQueueData = [
