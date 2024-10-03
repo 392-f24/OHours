@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import studentService from '../services/studentService';
+// import studentService from '../services/studentService';
 
 const Alert = ({ children, className, ...props }) => (
   <div role="alert" className={`rounded-lg border p-4 ${className}`} {...props}>
@@ -19,25 +19,25 @@ export default function StudentPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatus({ type: '', message: '' });
+    // e.preventDefault();
+    // setLoading(true);
+    // setStatus({ type: '', message: '' });
 
-    try {
-      await studentService.verifyCode(code);
-      setStatus({
-        type: 'success',
-        message: 'Code verified successfully!'
-      });
-      // Handle successful verification (e.g., show office hours schedule)
-    } catch (error) {
-      setStatus({
-        type: 'error',
-        message: error.response?.data?.message || 'Invalid code. Please try again.'
-      });
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   await studentService.verifyCode(code);
+    //   setStatus({
+    //     type: 'success',
+    //     message: 'Code verified successfully!'
+    //   });
+    //   // Handle successful verification (e.g., show office hours schedule)
+    // } catch (error) {
+    //   setStatus({
+    //     type: 'error',
+    //     message: error.response?.data?.message || 'Invalid code. Please try again.'
+    //   });
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
