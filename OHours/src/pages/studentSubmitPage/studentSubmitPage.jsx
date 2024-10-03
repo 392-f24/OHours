@@ -19,6 +19,8 @@ function StudentSubmitForm() {
     
     // Navigate to a thank you page or back to the form
     navigate('/thank-you');
+    // temp nav linking to demo wait room
+    navigate('/waitroom');
     // Alternatively, you could reset the form and show a success message:
     // setName('');
     // setQuestion('');

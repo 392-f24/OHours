@@ -38,6 +38,8 @@ export default function App() {
           <Route path="/student" element={<StudentPage />} />
           <Route path="/staff" element={<LoginPage />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
+          {/* temp path to demo wait room */}
+          <Route path="/waitroom" element={<WaitRoom />} />
           <Route path="/student/:roomCode/waitroom/:submissionId" element={<WaitRoom />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
