@@ -1,19 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Using React.lazy for code splitting
+ 
 const LandingPage = React.lazy(() => import('./landingPage/landingPage'));
 const StudentPage = React.lazy(() => import('./studentCodePage/studentCodePage'));
 const StaffPage = React.lazy(() => import('./staffLoginPage/staffLoginPage'));
-
-// Loading spinner component
+ 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
   </div>
 );
-
-// Error page component
+ 
 const NotFoundPage = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
     <div className="text-center">
