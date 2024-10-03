@@ -4,15 +4,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const LandingPage = React.lazy(() => import('./landingPage/landingPage'));
 const StudentPage = React.lazy(() => import('./studentCodePage/studentCodePage'));
 const StaffPage = React.lazy(() => import('./staffLoginPage/staffLoginPage'));
-const LoginPage = React.lazy(()=> import('./loginForm/login_form')); 
-const WaitRoom = React.lazy(()=> import('./waitroom/waitroom')); 
- 
+const LoginPage = React.lazy(() => import('./loginForm/login_form')); 
+const WaitRoom = React.lazy(() => import('./waitroom/waitroom')); 
+const StudentSubmitPage = React.lazy(() => import('./studentSubmitPage/studentSubmitPage'));
+
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
   </div>
 );
- 
+
 const NotFoundPage = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
     <div className="text-center">
@@ -34,13 +35,10 @@ export default function App() {
       <React.Suspense fallback={<LoadingSpinner />}>
         <Routes> 
           <Route path="/" element={<LandingPage />} />
-           
           <Route path="/student" element={<StudentPage />} />
-           
           <Route path="/staff" element={<LoginPage />} />
-
-          <Route path="/waitroom" element={<WaitRoom />} />
-           
+          <Route path="/submit" element={<StudentSubmitPage />} />
+          <Route path="/student/:roomCode/waitroom/:submissionId" element={<WaitRoom />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </React.Suspense>
