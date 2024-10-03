@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-// import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from 'react'; 
+import studentService from '../services/studentService';
 
 const Alert = ({ children, className, ...props }) => (
   <div role="alert" className={`rounded-lg border p-4 ${className}`} {...props}>
@@ -24,15 +24,7 @@ export default function StudentPage() {
     setStatus({ type: '', message: '' });
 
     try {
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/verify-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
-      });
-
-      if (!response.ok) throw new Error('Invalid code');
-
+      await studentService.verifyCode(code);
       setStatus({
         type: 'success',
         message: 'Code verified successfully!'
@@ -41,7 +33,7 @@ export default function StudentPage() {
     } catch (error) {
       setStatus({
         type: 'error',
-        message: 'Invalid code. Please try again.'
+        message: error.response?.data?.message || 'Invalid code. Please try again.'
       });
     } finally {
       setLoading(false);
