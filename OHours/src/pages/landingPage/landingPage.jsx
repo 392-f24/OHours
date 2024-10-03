@@ -24,6 +24,15 @@ export default function LandingPage() {
             Student
           </span>
         </Link>
+
+        <Link
+          to="/submit"
+          className="flex-1 h-40 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center justify-center border-2 border-gray-200 hover:border-blue-500 group no-underline"
+        >
+          <span className="text-2xl font-semibold text-gray-700 group-hover:text-blue-600">
+            Student
+          </span>
+        </Link>
       </div>
     </div>
   );
