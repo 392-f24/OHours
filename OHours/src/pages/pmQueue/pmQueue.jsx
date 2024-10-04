@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@shadcn/ui';
-import { ScrollArea } from '@shadcn/ui';
-import { Button } from '@shadcn/ui';
-import { Checkbox } from '@shadcn/ui';
+import { Card } from '@components/Cards';
+import { CardContent } from '@components/CardContent';
+import { Checkbox } from '@components/Checkbox';
+import { Button } from '@components/Button';
 
 // Updated mock data to reflect student queue
 const mockQueueData = [
@@ -27,7 +27,43 @@ const mockQueueData = [
     description: "Discussion about project proposal",
     checked: false
   },
+  { 
+    id: 4, 
+    studentName: "Alice Brown",
+    priorityNumber: "4",
+    description: "Clarification on exam schedule",
+    checked: false
+  },
+  { 
+    id: 5, 
+    studentName: "Charlie Davis",
+    priorityNumber: "5",
+    description: "Issues with installation of tools",
+    checked: false
+  },
+  { 
+    id: 6, 
+    studentName: "Emily White",
+    priorityNumber: "6",
+    description: "Help with debugging code",
+    checked: false
+  },
+  { 
+    id: 7, 
+    studentName: "Frank Harris",
+    priorityNumber: "7",
+    description: "Discussion about final project topic",
+    checked: false
+  },
+  { 
+    id: 8, 
+    studentName: "Grace Lee",
+    priorityNumber: "8",
+    description: "Needs guidance on research paper",
+    checked: false
+  },
 ];
+
 
 export default function QueueManagement() {
   const [roomNumber, setRoomNumber] = useState("A101");
@@ -52,7 +88,7 @@ export default function QueueManagement() {
       {/* Room Section */}
       <div className="p-4">
         <Card>
-          <CardContent className="p-4">
+          <CardContent>
             <div className="text-sm font-semibold mb-1">Room:</div>
             <div className="text-2xl font-bold">{roomNumber}</div>
           </CardContent>
@@ -60,11 +96,10 @@ export default function QueueManagement() {
       </div>
 
       {/* Queue Section */}
-      <div className="flex-1 overflow-hidden p-4">
+      <div className="flex-1 overflow-y-auto p-4">
         <Card className="h-full flex flex-col">
-          <CardContent className="p-4 flex-1">
+          <CardContent className="flex-1">
             <div className="text-sm font-semibold mb-2">Queue</div>
-            <ScrollArea className="h-[calc(100%-2rem)]">
               <div className="space-y-2 pr-4">
                 {queueItems.map((item) => (
                   <Card key={item.id}>
@@ -75,8 +110,7 @@ export default function QueueManagement() {
                         </div>
                         <Checkbox 
                           checked={item.checked}
-                          onCheckedChange={() => handleCheckboxChange(item.id)}
-                          className="h-5 w-5"
+                          onChange={() => handleCheckboxChange(item.id)}
                         />
                       </div>
                       <div>
@@ -87,7 +121,7 @@ export default function QueueManagement() {
                   </Card>
                 ))}
               </div>
-            </ScrollArea>
+            
           </CardContent>
         </Card>
       </div>
