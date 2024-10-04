@@ -7,6 +7,7 @@ const StaffPage = React.lazy(() => import('./staffLoginPage/staffLoginPage'));
 const LoginPage = React.lazy(() => import('./loginForm/login_form')); 
 const WaitRoom = React.lazy(() => import('./waitroom/waitroom')); 
 const StudentSubmitPage = React.lazy(() => import('./studentSubmitPage/studentSubmitPage'));
+const PmQueue = React.lazy(() => import('./pmQueue/pmQueue'));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -38,6 +39,9 @@ export default function App() {
           <Route path="/student" element={<StudentPage />} />
           <Route path="/staff" element={<LoginPage />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
+          {/* temp path to demo wait room */}
+          <Route path="/pmQ" element={<PmQueue />} />
+          <Route path="/waitroom" element={<WaitRoom />} />
           <Route path="/student/:roomCode/waitroom/:submissionId" element={<WaitRoom />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

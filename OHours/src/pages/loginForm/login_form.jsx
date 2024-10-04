@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,6 +18,7 @@ const LoginForm = () => {
     } else {
       console.log('Login attempt', { username, password });
       alert('Login form submitted');
+      navigate('/pmQ');
     }
   };
 
