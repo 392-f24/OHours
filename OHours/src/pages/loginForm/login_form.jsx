@@ -1,33 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import BackButton from "../../components/back";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (username.length < 3 || password.length < 6) {
-      setError('Username must be at least 3 characters and password at least 6 characters long.');
+      setError(
+        "Username must be at least 3 characters and password at least 6 characters long."
+      );
     } else {
-      console.log('Login attempt', { username, password });
-      alert('Login form submitted');
-      navigate('/pmQ');
+      console.log("Login attempt", { username, password });
+      alert("Login form submitted");
+      navigate("/pmQ");
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Peer Mentor Login</h2>
+      <div className="w-full flex justify-start mb-6">
+        <BackButton />
+      </div>
+      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+        Peer Mentor Login
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Username
           </label>
           <input
@@ -40,7 +49,10 @@ const LoginForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Password
           </label>
           <input
