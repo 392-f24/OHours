@@ -3,8 +3,9 @@ import { Card } from '@components/Cards';
 import { CardContent } from '@components/CardContent';
 import { Checkbox } from '@components/Checkbox';
 import { Button } from '@components/Button';
+import { useNavigate } from 'react-router-dom';
 
-// Updated mock data to reflect student queue
+
 const mockQueueData = [
   { 
     id: 1, 
@@ -65,9 +66,12 @@ const mockQueueData = [
 ];
 
 
-export default function QueueManagement() {
-  const [roomNumber, setRoomNumber] = useState("A101");
+export default function QueueManagement({ onLogout }) {
+  const navigate = useNavigate();
+  const [roomNumber, setRoomNumber] = useState("CS392");
   const [queueItems, setQueueItems] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
 
   useEffect(() => {
     setQueueItems(mockQueueData);
@@ -77,30 +81,80 @@ export default function QueueManagement() {
     setQueueItems(queueItems.map(item => 
       item.id === id ? {...item, checked: !item.checked} : item
     ));
+
+    //select all
+    const updatedItems = queueItems.map(item => 
+      item.id === id ? {...item, checked: !item.checked} : item
+    );
+    setSelectAll(updatedItems.every(item => item.checked));
   };
 
-  const handleButtonClick = () => {
-    console.log("Next student");
+
+  const handleSelectAll = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
+    setQueueItems(queueItems.map(item => ({
+      ...item,
+      checked: newSelectAll
+    })));
+  };
+
+  const handleLogout = () => {
+    navigate('/');
+  };
+
+  const handleDelete = () => {
+    const updatedQueue = queueItems.filter(item => !item.checked);
+    setQueueItems(updatedQueue);
+    setSelectAll(false);
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-[90vh] flex flex-col">
       {/* Room Section */}
-      <div className="p-4">
+      <div className="p-2 ">
         <Card>
-          <CardContent>
-            <div className="text-sm font-semibold mb-1">Room:</div>
-            <div className="text-2xl font-bold">{roomNumber}</div>
+          <CardContent className="flex justify-between items-center">
+            <div>
+              <div className="text-sm font-semibold mb-1">Room:</div>
+              <div className="text-2xl font-bold">{roomNumber}</div>
+            </div>
+            <Button 
+              variant="ghost" 
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              Logout
+            </Button>
           </CardContent>
         </Card>
       </div>
 
       {/* Queue Section */}
-      <div className="flex-1 overflow-y-auto p-4">
-        <Card className="h-full flex flex-col">
-          <CardContent className="flex-1">
-            <div className="text-sm font-semibold mb-2">Queue</div>
-              <div className="space-y-2 pr-4">
+      <div className=" w-full h-1/2 flex-1 p-4 flex">
+        <Card className="w-full  flex flex-col">
+          <CardContent className="flex flex-col h-full">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="text-sm font-semibold">Queue</div>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  id="select-all"
+                />
+                <label 
+                  htmlFor="select-all" 
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
+                  Select All
+                </label>
+              </div>
+            </div>
+            
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="space-y-2">
                 {queueItems.map((item) => (
                   <Card key={item.id}>
                     <CardContent className="p-3">
@@ -121,7 +175,7 @@ export default function QueueManagement() {
                   </Card>
                 ))}
               </div>
-            
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -129,10 +183,10 @@ export default function QueueManagement() {
       {/* Button Section */}
       <div className="p-4">
         <Button 
-          onClick={handleButtonClick}
-          className="w-full"
+          onClick={handleDelete}
+          className="fixed bottom-4 left-1/2 transform -translate-x-1/2"
         >
-          Next Student
+          Resolve
         </Button>
       </div>
     </div>

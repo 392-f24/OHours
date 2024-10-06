@@ -1,5 +1,5 @@
 export function Card({ children, className = "" }) {
   return (
-    <div className={`bg-white shadow rounded ${className}`}>{children}</div>
+    <div className={` overflow-y-auto bg-white shadow rounded ${className}`}>{children}</div>
   );
 }
