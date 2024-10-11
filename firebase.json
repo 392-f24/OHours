@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "posts": {
+      ".read": true,
+      ".write": "auth !== null"
+    }
+  }
+}
