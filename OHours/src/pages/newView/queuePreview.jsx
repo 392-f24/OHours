@@ -13,13 +13,13 @@ import { CardContent } from '@components/CardContent';
           <Card key={item.id}>
             <CardContent className="p-3">
               <div className="font-medium">
-                #{item.priorityNumber} {item.studentName} 
+                {item.studentName} 
                 {item.id === userQueueItemId && (
                   <span className="ml-2 text-blue-600 text-medium">(You)</span>
                 )}
               </div>
               <div className="text-sm text-gray-600 mt-1">
-                {item.description}
+                {item.question}
               </div>
             </CardContent>
           </Card>

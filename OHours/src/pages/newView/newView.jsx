@@ -5,116 +5,84 @@ import { CardContent } from '@components/CardContent';
 import SubmitQuestion  from './submitQuestion';
 import StudentETA from './studentETA';
 import QueuePreview from './queuePreview';
-
-const mockQueueData = [ 
-  { 
-    id: 1, 
-    studentName: "John Doe",
-    priorityNumber: "1",
-    description: "Question about assignment 3"
-  },
-  { 
-    id: 2, 
-    studentName: "Jane Smith",
-    priorityNumber: "2",
-    description: "Needs help with coding problem"
-  },
-  { 
-    id: 3, 
-    studentName: "Bob Johnson",
-    priorityNumber: "3",
-    description: "Discussion about project proposal"
-  }
-];
+import { getQueue, addQuestion, updateQuestion, deleteQuestion } from '../../firebase/studentSideFunctions';
 
 export default function NewView() {
     const navigate = useNavigate();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [queueItems, setQueueItems] = useState([]);
-    const [peopleAhead, setPeopleAhead] = useState(0);
-    const [estimatedTime, setEstimatedTime] = useState(0);
-    const [userQueueItemId, setUserQueueItemId] = useState(null);
+    const [peopleAhead, setpeopleAhead] = useState(0)
+    // new question states
+    const [newQuestionId, setNewQuestionId] = useState(null)
+    const [newQuestion, setNewQuestion] = useState({ name: '', question: '' });
+    // editting states for saving 
+    const [editedQuestion, setEditedQuestion] = useState('');
+    const [queue, setQueue] = useState([]);
+    // const [estimatedTime, setEstimatedTime] = useState(0);
     const roomNumber = "CS 392"; // replace with prop for this function, passed from enter code page
 
-    // set initial state
+    // continously update queue
     useEffect(() => {
-        setQueueItems(mockQueueData);
+        fetchQueue();
     }, []);
 
-    // update data 
-    useEffect(() => {
-        // update positions if user submitted
-        if (isSubmitted && userQueueItemId !== null) {
-            const updatePositions = () => { // TODO replace with fetch from firestore
-                const userIndex = queueItems.findIndex(item => item.id === userQueueItemId);
-                if (userIndex !== -1) {
-                setPeopleAhead(userIndex);
-                setEstimatedTime(userIndex * 5);
-                }
-            };
-            updatePositions();
-
-            // update positions in queue every 5s 
-            const intervalId = setInterval(() => { 
-                setQueueItems(prev => { // TODO replcae with fetch from firestore
-                    if (prev.length <= 1) return prev;
-                    const [, ...rest] = prev;
-                    return rest.map((item, index) => ({
-                        ...item,
-                        priorityNumber: (index + 1).toString()
-                    }));
-                });
-                updatePositions();
-            }, 5000);
-
-            return () => clearInterval(intervalId);
+    // get questions to display
+    const fetchQueue = async () => {
+        try {
+          const fetchedQueue = await getQueue();
+          setQueue(fetchedQueue);
+          if (newQuestionId != null){
+            setpeopleAhead(fetchQueue.length - 1)
+          } else {
+            setpeopleAhead(fetchQueue.length)
+          }
+          
+        } catch (error) {
+          console.error('Error fetching questions:', error);
         }
-    }, [isSubmitted, userQueueItemId, queueItems]);
+      };
 
-
-    // call on submit click
-    const handleSubmitQuestion = ({ name, question }) => {  // TODO PUT to db 
-        if (userQueueItemId !== null) { // check if this is initial submit, update existing if not
-        setQueueItems(prev => prev.map(item => 
-            item.id === userQueueItemId 
-            ? { ...item, description: question }
-            : item
-        ));
-        } else { // create new item in db 
-        const newId = Math.max(...queueItems.map(item => item.id), 0) + 1;
-        const newQueueItem = {
-            id: newId,
-            studentName: name,
-            priorityNumber: (queueItems.length + 1).toString(),
-            description: question
-        };
-        setQueueItems(prev => [...prev, newQueueItem]);
-        setUserQueueItemId(newId);
+    // call on submit question click
+    const handleAddQuestion = async (name, question) => {
+        try {
+            setNewQuestion({ name: name, question: question })
+            setNewQuestionId(await addQuestion(newQuestion));
+            fetchQueue();
+        } catch (error) {
+            console.error('Error adding question:', error);
         }
+        setIsSubmitted(true)
+      };
 
-        setIsSubmitted(true);
-    };
+      // call on save question edits
+    const handleEditQuestion = async (e) => {
+        e.preventDefault();
+        setIsSubmitted(false);
+        try {
+            setNewQuestion({ name: newQuestion.name, question: editedQuestion });
+            await updateQuestion(newQuestionId, newQuestion);
+            fetchQuestions();
 
+        } catch (error) {
+            console.error('Error updating question:', error);
+        }
+      };
 
     // called on leave queue
-    const handleLeaveQueue = () => { // TODO DELETE to db 
+    const handleLeaveQueue = async () => { // TODO DELETE to db 
         if (window.confirm("Are you sure you want to leave the queue?")) {
-        setQueueItems(prev => {
-            const filtered = prev.filter(item => item.id !== userQueueItemId);
-            return filtered.map((item, index) => ({
-            ...item,
-            priorityNumber: (index + 1).toString()
-            }));
-        });
-        // reset statuses
-        setIsSubmitted(false);
-        setUserQueueItemId(null);
-        setPeopleAhead(0);
-        setEstimatedTime(0);
-        
+            try {
+                await deleteQuestion(newQuestionId.toString());
+                fetchQuestions();
+              } catch (error) {
+                console.error('Error deleting question:', error);
+              }
+ 
         navigate('/');
         }
     };
+
+    
+
 
     return (
         <div className="min-h-screen p-4">
@@ -130,18 +98,15 @@ export default function NewView() {
                     <CardContent className="h-full p-4">
                     {!isSubmitted ? (
                         <SubmitQuestion
-                        initialData={userQueueItemId ? {
-                            name: queueItems.find(item => item.id === userQueueItemId)?.studentName,
-                            question: queueItems.find(item => item.id === userQueueItemId)?.description
-                        } : null}
-                        onSubmit={handleSubmitQuestion}
+                        initialData={newQuestionId ? {newQuestion} : null}
+                        onSubmit={handleAddQuestion}
                         onCancel={() => setIsSubmitted(true)}
                         />
                     ) : (
                         <StudentETA 
                         peopleAhead={peopleAhead}
-                        estimatedTime={estimatedTime}
-                        onEdit={() => setIsSubmitted(false)}
+                        estimatedTime={peopleAhead * 5}
+                        onEdit={() => handleEditQuestion}
                         onLeave={handleLeaveQueue}
                         />
                     )}
@@ -149,8 +114,8 @@ export default function NewView() {
                 </Card>
                 {/* live queue preview */}
                 <QueuePreview
-                    queueItems={queueItems}
-                    userQueueItemId={userQueueItemId}
+                    queueItems={queue}
+                    userQueueItemId={newQuestionId}
                 />
             </div>
         </div>

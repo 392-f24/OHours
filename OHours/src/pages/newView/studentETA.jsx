@@ -13,9 +13,10 @@ export default function StudentETA({peopleAhead, estimatedTime, onEdit, onLeave}
           )}
         </div>
         <div className="flex space-x-4">
+        {peopleAhead !== 0  &&
           <button onClick={onEdit} variant="outline" className="bg-white border border-blue-500 text-blue-500 py-2 px-4 rounded">
             Edit Question
-          </button>
+          </button>}
           <button onClick={onLeave} variant="destructive" className="bg-white border border-red-500 text-red-500 py-2 px-4 rounded">
             Leave Queue
           </button>

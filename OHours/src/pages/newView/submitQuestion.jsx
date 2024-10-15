@@ -1,5 +1,6 @@
   // SubmitQuestion.jsx
   import { useState } from 'react';
+  import { getQueue, addQuestion, updateQuestion, deleteQuestion } from '../../firebase/studentSideFunctions';
   
   export default function SubmitQuestion({ initialData = null, onSubmit, onCancel }) {
     const [name, setName] = useState(initialData?.name || "");
@@ -7,7 +8,7 @@
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      onSubmit({ name, question });
+      onSubmit(name, question);
     };
   
     return (
