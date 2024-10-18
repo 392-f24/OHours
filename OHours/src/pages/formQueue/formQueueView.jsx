@@ -91,7 +91,11 @@ export default function FormQueueView() {
     return (
         <div className="min-h-screen p-4">
             <div className="max-w-6xl mx-auto">
+<<<<<<< Updated upstream
                 <div className="mb-6 border border-blue-500 rounded-md p-5">
+=======
+                <div className="sm:mb-6 border border-blue-500 rounded-md p-5">
+>>>>>>> Stashed changes
                     <div className="text-2xl text-blue-500 font-bold">{className} OH </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
