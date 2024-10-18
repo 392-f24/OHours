@@ -49,7 +49,7 @@ export default function App() {
           <Route path="/student" element={<StudentPage />} />
           <Route path="/staff" element={<LoginForm profile={profile} />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
-          <Route path="/pmQ/:sessionID" element={<PmQueue />} />
+          <Route path="/pmQ/:sessionID/:PMID" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
           <Route path="/formqueue/:code" element={<FormQueueView />} />

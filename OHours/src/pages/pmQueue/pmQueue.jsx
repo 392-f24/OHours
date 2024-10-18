@@ -13,7 +13,7 @@ import {
 } from "../../firebase/pmSideFunctions";
 
 export default function QueueManagement({ onLogout }) {
-  const { sessionID } = useParams();
+  const { sessionID, PMID } = useParams();
   const navigate = useNavigate();
   const [queueItems, setQueueItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -86,7 +86,7 @@ export default function QueueManagement({ onLogout }) {
   };
 
   const handleLogout = async () => {
-    await deleteSession(sessionID);
+    await deleteSession(sessionID, PMID);
     navigate("/");
   };
 
@@ -178,93 +178,116 @@ export default function QueueManagement({ onLogout }) {
 
   return (
     <div className="h-[90vh] flex flex-col bg-gray-100">
-  {/* Room and Session Info */}
-  <div className="p-4">
-    <Card className="bg-white shadow-md rounded-lg">
-      <CardContent className="flex justify-between items-center p-4">
-        <div>
-          <div className="text-sm font-semibold text-gray-600 mb-1">Room:</div>
-          <div className="text-2xl font-bold">{roomNumber}</div>
-        </div>
-        <div>
-          <div className="text-sm font-semibold text-gray-600 mb-1">Join Code:</div>
-          <div className="text-2xl font-bold">{sessionID}</div>
-        </div>
-        <Button
-          variant="ghost"
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-red-600 hover:bg-red-100 transition duration-200 rounded-md"
-        >
-          End Session
-        </Button>
-      </CardContent>
-    </Card>
-  </div>
-
-  {/* Queue Section */}
-  <div className="w-full flex-1 p-4 flex">
-    <Card className="w-full bg-white shadow-md rounded-lg flex flex-col">
-      <CardContent className="flex flex-col h-full p-4">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="text-sm font-semibold text-gray-600">Queue</div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              checked={selectAll}
-              onChange={handleSelectAll}
-              id="select-all"
-            />
-            <label
-              htmlFor="select-all"
-              className="text-sm text-gray-700 cursor-pointer"
+      {/* Room and Session Info */}
+      <div className="p-4">
+        <Card className="bg-white shadow-md rounded-lg">
+          <CardContent className="flex justify-between items-center p-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-600 mb-1">
+                Room:
+              </div>
+              <div className="text-2xl font-bold">{roomNumber}</div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-gray-600 mb-1">
+                Join Code:
+              </div>
+              <div className="text-2xl font-bold">{sessionID}</div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className={`
+    flex items-center gap-2
+    px-4 py-2 bg-red-400
+    border border-red-300
+    rounded-lg shadow-sm
+    transition duration-200
+    hover:bg-red-500 hover:border-red-400
+    active:bg-red-100
+  `}
             >
-              Select All
-            </label>
-          </div>
-        </div>
+              End Session
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto pr-2">
-          <div className="space-y-2">
-            {queueItems.map((item) => (
-              <Card key={item.id} className="bg-gray-50 hover:bg-gray-100 transition duration-150 rounded-lg shadow-sm">
-                <CardContent className="p-3">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="font-medium text-gray-800">
-                      {item.studentName} #{item.id}
-                    </div>
-                    <Checkbox
-                      checked={item.checked}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Description:</div>
-                    <div className="text-sm">{item.description}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
+      {/* Queue Section */}
+      <div className="w-full flex-1 p-4 flex">
+        <Card className="w-full bg-white shadow-md rounded-lg flex flex-col">
+          <CardContent className="flex flex-col h-full p-4">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="text-sm font-semibold text-gray-600">Queue</div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  id="select-all"
+                />
+                <label
+                  htmlFor="select-all"
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
+                  Select All
+                </label>
+              </div>
+            </div>
 
-  {/* Button Section */}
-  <div className="p-4 flex space-x-4">
-    <Button onClick={handleDelete} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200">
-      Resolve
-    </Button>
-    <Button
-      onClick={handleMerge}
-      disabled={!mergeActive}
-      className={`px-4 py-2 rounded ${mergeActive ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-500 cursor-not-allowed"} transition duration-200`}
-    >
-      Merge
-    </Button>
-  </div>
-</div>
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="space-y-2">
+                {queueItems.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="bg-gray-50 hover:bg-gray-100 transition duration-150 rounded-lg shadow-sm"
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="font-medium text-gray-800">
+                          {item.studentName} #{item.id}
+                        </div>
+                        <Checkbox
+                          checked={item.checked}
+                          onChange={() => handleCheckboxChange(item.id)}
+                        />
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-500">
+                          Description:
+                        </div>
+                        <div className="text-sm">{item.description}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
+      {/* Button Section */}
+      <div className="p-4 flex space-x-4">
+        <Button
+          onClick={handleDelete}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+        >
+          Resolve
+        </Button>
+        <Button
+          onClick={handleMerge}
+          disabled={!mergeActive}
+          className={`px-4 py-2 rounded ${
+            mergeActive
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          } transition duration-200`}
+        >
+          Merge
+        </Button>
+      </div>
+    </div>
   );
 }
