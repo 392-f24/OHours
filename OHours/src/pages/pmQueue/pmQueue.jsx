@@ -13,7 +13,7 @@ import {
 } from "../../firebase/pmSideFunctions";
 
 export default function QueueManagement({ onLogout }) {
-  const { sessionID } = useParams();
+  const { sessionID, PMID } = useParams();
   const navigate = useNavigate();
   const [queueItems, setQueueItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -86,7 +86,7 @@ export default function QueueManagement({ onLogout }) {
   };
 
   const handleLogout = async () => {
-    await deleteSession(sessionID);
+    await deleteSession(sessionID, PMID);
     navigate("/");
   };
 

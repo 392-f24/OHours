@@ -118,11 +118,11 @@ export const setupQueueListener = (sessionID, onUpdate) => {
   return () => off(queueRef, "value", unsubscribe);
 };
 
-export const deleteSession = async (sessionId) => {
+export const deleteSession = async (sessionId, PMID) => {
   const db = getDatabase();
   try {
     await remove(ref(db, `sessionCode/${sessionId}`));
-    await remove(ref(db, `pmToSession/${sessionId}`));
+    await remove(ref(db, `pmToSession/${PMID}`));
     console.log(`Session with ID ${sessionId} deleted successfully`);
   } catch (error) {
     console.error("Error deleting session:", error);

@@ -22,7 +22,7 @@ export default function PMLanding() {
   const handleJoinSession = () => {
     console.log(PMSessions, sessions);
     if (sessionCode.trim() in PMSessions) {
-      navigate(`/pmQ/${PMSessions[sessionCode]}`);
+      navigate(`/pmQ/${PMSessions[sessionCode]}/${sessionCode}`);
     } else if (sessionCode.trim() in sessions) {
       navigate(`/formqueue/${sessionCode}`);
     } else {
