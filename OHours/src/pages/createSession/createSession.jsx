@@ -34,11 +34,17 @@ export default function CreateSession() {
   };
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center space-y-6">
+    <div className="h-screen flex flex-col justify-center items-center space-y-6 bg-gray-100">
+      {/* Back Button */}
       <div className="w-full flex justify-start mb-6">
         <BackButton />
       </div>
-      <form onSubmit={handleSubmit} className="w-80 space-y-4">
+
+      {/* Form for Creating Session */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-80 bg-white p-6 rounded-lg shadow-md space-y-4"
+      >
         {/* Course Name Input */}
         <div>
           <label
@@ -53,20 +59,25 @@ export default function CreateSession() {
             onChange={(e) => setCourseName(e.target.value)}
             placeholder="Enter course name"
             required
-            className="w-full mt-1"
+            className="w-full mt-1 px-3 py-2 border border-gray-300 rounded"
           />
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full py-2">
+        <Button
+          type="submit"
+          className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+        >
           Create Session
         </Button>
       </form>
 
       {/* Display Generated Codes */}
       {sessionID && studentCode && (
-        <div className="text-center space-y-2">
-          <p className="text-lg font-semibold">Session Created!</p>
+        <div className="text-center space-y-2 bg-green-50 p-4 rounded-lg shadow-md">
+          <p className="text-lg font-semibold text-green-700">
+            Session Created!
+          </p>
           <p>
             Session ID: <span className="font-bold">{sessionID}</span>
           </p>

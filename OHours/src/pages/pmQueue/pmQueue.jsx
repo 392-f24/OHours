@@ -177,23 +177,27 @@ export default function QueueManagement({ onLogout }) {
   };
 
   return (
-    <div className="h-[90vh] flex flex-col">
-      <div className="p-2 ">
-        <Card>
-          <CardContent className="flex justify-between items-center">
+    <div className="h-[90vh] flex flex-col bg-gray-100">
+      {/* Room and Session Info */}
+      <div className="p-4">
+        <Card className="bg-white shadow-md rounded-lg">
+          <CardContent className="flex justify-between items-center p-4">
             <div>
-              <div className="text-sm font-semibold mb-1">Room:</div>
+              <div className="text-sm font-semibold text-gray-600 mb-1">
+                Room:
+              </div>
               <div className="text-2xl font-bold">{roomNumber}</div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-1">Join Code:</div>
+              <div className="text-sm font-semibold text-gray-600 mb-1">
+                Join Code:
+              </div>
               <div className="text-2xl font-bold">{sessionID}</div>
             </div>
-
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-red-600 hover:bg-red-100 transition duration-200 rounded-md"
             >
               End Session
             </Button>
@@ -202,12 +206,12 @@ export default function QueueManagement({ onLogout }) {
       </div>
 
       {/* Queue Section */}
-      <div className="w-full h-1/2 flex-1 p-4 flex">
-        <Card className="w-full flex flex-col">
-          <CardContent className="flex flex-col h-full">
+      <div className="w-full flex-1 p-4 flex">
+        <Card className="w-full bg-white shadow-md rounded-lg flex flex-col">
+          <CardContent className="flex flex-col h-full p-4">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-              <div className="text-sm font-semibold">Queue</div>
+              <div className="text-sm font-semibold text-gray-600">Queue</div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   checked={selectAll}
@@ -227,10 +231,13 @@ export default function QueueManagement({ onLogout }) {
             <div className="flex-1 overflow-y-auto pr-2">
               <div className="space-y-2">
                 {queueItems.map((item) => (
-                  <Card key={item.id}>
+                  <Card
+                    key={item.id}
+                    className="bg-gray-50 hover:bg-gray-100 transition duration-150 rounded-lg shadow-sm"
+                  >
                     <CardContent className="p-3">
                       <div className="flex justify-between items-center mb-2">
-                        <div className="font-medium">
+                        <div className="font-medium text-gray-800">
                           {item.studentName} #{item.id}
                         </div>
                         <Checkbox
@@ -254,12 +261,21 @@ export default function QueueManagement({ onLogout }) {
       </div>
 
       {/* Button Section */}
-      <div className="p-4 flex">
-        <Button onClick={handleDelete}>Resolve</Button>
-
+      <div className="p-4 flex space-x-4">
+        <Button
+          onClick={handleDelete}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+        >
+          Resolve
+        </Button>
         <Button
           onClick={handleMerge}
-          disabled={!mergeActive} // Button is disabled unless two or more items are selected
+          disabled={!mergeActive}
+          className={`px-4 py-2 rounded ${
+            mergeActive
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          } transition duration-200`}
         >
           Merge
         </Button>
