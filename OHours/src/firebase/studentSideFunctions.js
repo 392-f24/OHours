@@ -13,9 +13,11 @@ const padId = (id, length = 3) => {
 export const getQueue = async () => {
   try {
     const roomDoc = await getDoc(roomDocRef);
-    const queue = roomDoc.data().queue; // Get the queue map, defaulting to an empty object
-    console.log(Object.entries(queue))
-    return Object.entries(queue).map(([id, data]) => ({ id, ...data }));
+    const queue = roomDoc.data().queue || {}; // Get the queue map, defaulting to an empty object
+    // Sort the queue entries by their ID (which should correspond to the order they were added)
+    const sortedQueue = Object.entries(queue).sort((a, b) => a[0].localeCompare(b[0]));
+    console.log(sortedQueue);
+    return sortedQueue.map(([id, data]) => ({ id, ...data }));
   } catch (error) {
     throw error;
   }

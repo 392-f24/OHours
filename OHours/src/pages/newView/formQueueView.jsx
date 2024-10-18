@@ -39,7 +39,7 @@ export default function FormQueueView() {
             setNewQuestion(question);
             setNewName(name);
             setOriginalQuestion(question);
-            const id = await addQuestion({'name': name, 'question': question});
+            const id = await addQuestion({'id': newQuestionId, 'name': name, 'question': question});
             setNewQuestionId(id);
             fetchQueue();
         } catch (error) {
@@ -54,7 +54,9 @@ export default function FormQueueView() {
         try {
             setNewQuestion(question);
             setOriginalQuestion(question);
-            await updateQuestion(newQuestionId, {'question': question});
+            console.log('new qursetoon is updated question');
+            console.log('saved old question updated question');
+            await updateQuestion(newQuestionId, {'id': newQuestionId, 'name': newName, 'question': question});
             fetchQueue();
         } catch (error) {
             console.error('Error updating question:', error);

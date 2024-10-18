@@ -3,12 +3,6 @@ import { useState, useEffect } from 'react';
 export default function SubmitQuestion({initialData, onSubmit, onEdit, setIsSubmitted, NewName, NewQuestion, setNewName}) {
     const [localQuestion, setLocalQuestion] = useState(NewQuestion);
 
-    useEffect(() => {
-        if (initialData) {
-            setLocalQuestion(initialData.newQuestion);
-        }
-    }, [initialData]);
-
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(NewName, localQuestion);
