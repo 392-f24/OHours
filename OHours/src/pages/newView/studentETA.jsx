@@ -4,9 +4,9 @@ export default function StudentETA({peopleAhead, estimatedTime, onEdit, onLeave}
       <div className="h-full flex flex-col justify-center items-center space-y-6">
         <div className="text-center space-y-4">
           <p className="text-2xl font-semibold text-gray-600">
-            {peopleAhead} {peopleAhead === 1 ? "person" : "people"} ahead
+            {peopleAhead} {peopleAhead == 1 ? "person" : "people"} ahead
           </p>
-          {peopleAhead === 0 && estimatedTime === 0 ? (
+          {peopleAhead == 0 && estimatedTime == 0 ? (
             <p className="text-3xl font-bold text-blue-500">It's Your Turn!</p>
           ) : (
             <p className="text-3xl font-bold text-gray-700">ETA: {estimatedTime} minutes</p>
