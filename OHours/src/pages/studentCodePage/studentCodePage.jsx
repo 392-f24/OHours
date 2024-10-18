@@ -53,7 +53,7 @@ export default function StudentCodePage() {
         message: "Code verified successfully!",
       });
       // Navigate to the submit page
-      navigate("/submit");
+      navigate("/formqueue");
     } else {
       setStatus({
         type: "error",

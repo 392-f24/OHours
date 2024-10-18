@@ -1,22 +1,35 @@
-import { app, db, analytics } from './firebase';
-import { getDoc, setDoc, updateDoc, doc, increment, deleteField} from 'firebase/firestore';
+import { app } from './firebase';
+import { getDatabase, ref, get, set, update, remove, increment } from 'firebase/database';
 
-// temporarily using this dummy room reference
-const roomDocRef = doc(db, 'rooms/7702');
+// Initialize the database
+const db = getDatabase(app);
+
+// Reference to the room
+const roomRef = ref(db, 'sessionCode/0000');
 
 // Function to pad the ID with leading zeros
 const padId = (id, length = 3) => {
   return id.toString().padStart(length, '0');
 };
 
+export const getClassName = async () => {
+  try {
+    const roomSnapshot = await get(roomRef);
+    const className = roomSnapshot.val()?.className || {}; 
+    return className;
+
+  } catch(error){
+    throw error;
+  }
+}
+
 // Get the full queue (all the questions)
 export const getQueue = async () => {
   try {
-    const roomDoc = await getDoc(roomDocRef);
-    const queue = roomDoc.data().queue || {}; // Get the queue map, defaulting to an empty object
-    // Sort the queue entries by their ID (which should correspond to the order they were added)
+    const roomSnapshot = await get(roomRef);
+    const queue = roomSnapshot.val()?.queue || {}; 
+    // Sort the queue entries by their ID
     const sortedQueue = Object.entries(queue).sort((a, b) => a[0].localeCompare(b[0]));
-    console.log(sortedQueue);
     return sortedQueue.map(([id, data]) => ({ id, ...data }));
   } catch (error) {
     throw error;
@@ -26,14 +39,14 @@ export const getQueue = async () => {
 // Add a new question
 export const addQuestion = async (questionData) => {
   try {
-    // Update the current queue length
-    await updateDoc(roomDocRef, { queueLength: increment(1) });
-    const newId = (await getDoc(roomDocRef)).data().queueLength;
+    const roomSnapshot = await get(roomRef);
+    const queueLength = roomSnapshot.val()?.queueLength || 0; 
+    const newId = queueLength + 1; 
     const paddedId = padId(newId);
-
-    // Add the new question to the queue map
-    await updateDoc(roomDocRef, {
-      [`queue.${paddedId}`]: { ...questionData, id: paddedId },
+    
+    await update(roomRef, {
+      [`queueLength`]: newId,
+      [`queue/${paddedId}`]: { ...questionData},
     });
     return paddedId;
   } catch (error) {
@@ -41,25 +54,28 @@ export const addQuestion = async (questionData) => {
   }
 };
 
-// Update an existing question (user updates their own question)
+// Update an existing question
 export const updateQuestion = async (questionId, updatedData) => {
   try {
-    // Update the specific question in the queue map
-    await updateDoc(roomDocRef, {
-      [`queue.${questionId}`]: updatedData,
+    await update(roomRef, {
+      [`queue/${questionId}`]: updatedData,
     });
   } catch (error) {
     throw error;
   }
 };
 
-// Delete a question (user leaves queue) -- perhaps use for resolve question too?
+// Delete a question -- maybe use a resolve for pm side too?
 export const deleteQuestion = async (questionId) => {
   try {
-    await updateDoc(roomDocRef, {
-      [`queue.${questionId}`]: deleteField(),
-    });
+    
+    remove(ref(db, `sessionCode/0000/queue/${questionId}`))
+    .then(() => {
+      console.log(`success! ${questionId} deleted`)
+    })
+    .catch((error) => console.log(error));
   } catch (error) {
+    console.error('Error deleting question:', error);
     throw error;
   }
 };
