@@ -33,7 +33,6 @@ stats.html
 
 .firebase  
 
-/src/firebase.js
-
+src/firebase/firebase.js 
 
 node_modules/

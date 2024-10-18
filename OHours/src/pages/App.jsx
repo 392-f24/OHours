@@ -13,8 +13,8 @@ const StudentSubmitPage = React.lazy(() =>
 const PmQueue = React.lazy(() => import("./pmQueue/pmQueue"));
 const PmLanding = React.lazy(() => import("./pmLanding/pmLanding"));
 const PmCreateSess = React.lazy(() => import("./createSession/createSession"));
- 
-const FormQueueView = React.lazy(() => import('./newView/formQueueView'));
+
+const FormQueueView = React.lazy(() => import("./formQueue/formQueueView"));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -47,12 +47,8 @@ export default function App() {
           <Route path="/pmQ" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
- 
+
           <Route path="/formqueue" element={<FormQueueView />} />
-          <Route
-            path="/student/:roomCode/waitroom/:submissionId"
-            element={<WaitRoom />}
-          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </React.Suspense>
