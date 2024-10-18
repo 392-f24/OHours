@@ -9,6 +9,8 @@ import {
   off,
 } from "firebase/database"; // Ensure you have these imports
 
+import { useDbData } from "./firebaseDb";
+
 export const createNewSession = async (
   newSessionID,
   newStudentCode,
@@ -120,6 +122,7 @@ export const deleteSession = async (sessionId) => {
   const db = getDatabase();
   try {
     await remove(ref(db, `sessionCode/${sessionId}`));
+    await remove(ref(db, `pmToSession/${sessionId}`));
     console.log(`Session with ID ${sessionId} deleted successfully`);
   } catch (error) {
     console.error("Error deleting session:", error);

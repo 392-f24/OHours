@@ -7,19 +7,24 @@ import BackButton from "@components/back";
 import { db } from "../../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { fetchAllActiveSessions } from "../../firebase/pmSideFunctions";
+import { useDbData } from "../../firebase/firebaseDb";
 
 export default function PMLanding() {
   const navigate = useNavigate();
   const [sessionCode, setSessionCode] = useState("");
   const [sessions, setSessions] = useState({});
+  const [PMSessions, error] = useDbData("pmToSession");
 
   const handleCreateSession = () => {
     navigate("/pmCreateSess");
   };
 
   const handleJoinSession = () => {
-    if (sessionCode.trim() in sessions) {
-      navigate(`/pmQ/${sessionCode}`);
+    console.log(PMSessions, sessions);
+    if (sessionCode.trim() in PMSessions) {
+      navigate(`/pmQ/${PMSessions[sessionCode]}`);
+    } else if (sessionCode.trim() in sessions) {
+      navigate(`/formqueue/${sessionCode}`);
     } else {
       alert("Please enter a valid session code.");
     }
