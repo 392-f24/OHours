@@ -1,7 +1,7 @@
 
 export default function StudentETA({peopleAhead, estimatedTime, onEdit, onLeave}) {
     return (
-      <div className="h-full flex flex-col justify-center items-center space-y-6">
+      <div className="h-50 sm:h-full flex flex-col justify-center items-center space-y-6">
         <div className="text-center space-y-4">
           <p className="text-2xl font-semibold text-gray-600">
             {peopleAhead} {peopleAhead == 1 ? "person" : "people"} ahead

@@ -3,7 +3,7 @@ import { CardContent } from '@components/CardContent';
 
 export default function QueuePreview({ queueItems, userQueueItemId }) {
   return (
-    <div className="h-[calc(100vh-200px)] bg-gray-50 rounded p-4 flex flex-col">
+    <div className="h-[calc(100vh-350px)] sm:h-[calc(100vh-200px)] bg-gray-50 rounded p-4 flex flex-col">
       <h2 className="text-xl font-semibold mb-4 text-gray-600">
         Current Queue {queueItems.length > 0 && `(${queueItems.length})`}
       </h2>
