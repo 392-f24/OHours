@@ -34,3 +34,6 @@ stats.html
 .firebase 
 
 firebase.js
+
+
+node_modules/
