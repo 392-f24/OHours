@@ -4,8 +4,9 @@ import { getDatabase, ref, get, set, update, remove, increment } from 'firebase/
 // Initialize the database
 const db = getDatabase(app);
 
+const sessionPath = 'sessionCode/5154'
 // Reference to the room
-const roomRef = ref(db, 'sessionCode/0000');
+const roomRef = ref(db, sessionPath);
 
 // Function to pad the ID with leading zeros
 const padId = (id, length = 3) => {
@@ -69,7 +70,7 @@ export const updateQuestion = async (questionId, updatedData) => {
 export const deleteQuestion = async (questionId) => {
   try {
     
-    remove(ref(db, `sessionCode/0000/queue/${questionId}`))
+    remove(ref(db, `${sessionPath}/queue/${questionId}`))
     .then(() => {
       console.log(`success! ${questionId} deleted`)
     })

@@ -15,16 +15,16 @@ export default function FormQueueView() {
     const [newQuestion, setNewQuestion] = useState('');
     const [originalQuestion, setOriginalQuestion] = useState('');
     const [queue, setQueue] = useState([]);
-    const [className, setClassName] = useState('')
-
-
+    const [className, setClassName] = useState('');
+    const [peopleAhead, setPeopleAhead] = useState(null)
+    queue.findIndex(item => item.id === newQuestionId)
     // keep live updates
     useEffect(() => {
         const intervalId = setInterval(() => {
             fetchQueue();
         }, 500)
         return () => clearInterval(intervalId)
-    }, []);
+    }, [peopleAhead, newQuestionId]);
 
     // function for updating the queue
     const fetchQueue = async () => {
@@ -33,6 +33,11 @@ export default function FormQueueView() {
             const classname = await getClassName();
             setClassName(classname);
             setQueue(fetchedQueue);
+
+            if (newQuestionId !== null) {
+                const index = fetchedQueue.findIndex(item => item.id === newQuestionId);
+                setPeopleAhead(index); // Update peopleAhead with the new index
+            }
         } catch (error) {
             console.error('Error fetching questions:', error);
         }
@@ -103,8 +108,8 @@ export default function FormQueueView() {
                             />
                         ) : (
                             <StudentETA 
-                            peopleAhead={(queue.length - 1)}
-                            estimatedTime={(queue.length - 1) * 5}
+                            peopleAhead={peopleAhead}
+                            estimatedTime={peopleAhead * 5}
                             onEdit={() => setIsSubmitted(false)}
                             onLeave={handleLeaveQueue}
                             />

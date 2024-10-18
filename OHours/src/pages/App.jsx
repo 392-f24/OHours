@@ -41,11 +41,9 @@ export default function App() {
           <Route path="/student" element={<StudentPage />} />
           <Route path="/staff" element={<LoginPage />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
-          {/* temp path to demo wait room */}
           <Route path="/pmQ" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
- 
           <Route path="/formqueue" element={<FormQueueView />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
