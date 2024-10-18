@@ -17,8 +17,6 @@ const PmCreateSess = React.lazy(() => import("./createSession/createSession"));
 
 const NewView = React.lazy(() => import("./newView/newView"));
 
-const NewView = React.lazy(() => import("./newView/newView"));
-
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
