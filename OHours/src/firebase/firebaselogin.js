@@ -14,9 +14,10 @@ export { firebaseSignOut as signOut };
 export const useAuthState = () => {
   const [user, setUser] = useState();
   
-  useEffect(() => (
-    onAuthStateChanged(getAuth(app), setUser)
-  ), []);
+  useEffect(() => { 
+    onAuthStateChanged(getAuth(app), setUser) 
+  } , []);
+  
 
   return [user];
 };
