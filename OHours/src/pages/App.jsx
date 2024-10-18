@@ -8,7 +8,12 @@ const LoginPage = React.lazy(() => import('./loginForm/login_form'));
 const WaitRoom = React.lazy(() => import('./waitroom/waitroom')); 
 const StudentSubmitPage = React.lazy(() => import('./studentSubmitPage/studentSubmitPage'));
 const PmQueue = React.lazy(() => import('./pmQueue/pmQueue'));
+const PmLanding = React.lazy(() => import('./pmLanding/pmLanding'));
+const PmCreateSess = React.lazy(() => import('./createSession/createSession'));
+
+
 const NewView = React.lazy(() => import('./newView/newView'));
+
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -42,6 +47,9 @@ export default function App() {
           <Route path="/submit" element={<StudentSubmitPage />} />
           {/* temp path to demo wait room */}
           <Route path="/pmQ" element={<PmQueue />} />
+          <Route path="/pmLand" element={<PmLanding />} />
+          <Route path="/pmCreateSess" element={<PmCreateSess />} />
+
           <Route path="/waitroom" element={<WaitRoom />} />
           <Route path="/newview" element={<NewView />} />
           <Route path="/student/:roomCode/waitroom/:submissionId" element={<WaitRoom />} />
