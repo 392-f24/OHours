@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useProfile } from "../firebase/profile";
+import LoginForm from "./loginForm/login_form";
 
 const LandingPage = React.lazy(() => import("./landingPage/landingPage"));
 const StudentPage = React.lazy(() =>
@@ -35,13 +37,17 @@ const NotFoundPage = () => (
 );
 
 export default function App() {
+  const [profile, profileLoading, profileError] = useProfile();
+  if (profileError) return <h1>Error loading profile: {`${profileError}`}</h1>;
+  if (!profile) return <h1>No profile data</h1>;
+
   return (
     <Router>
       <React.Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/student" element={<StudentPage />} />
-          <Route path="/staff" element={<LoginPage />} />
+          <Route path="/staff" element={<LoginForm profile={profile} />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
           {/* temp path to demo wait room */}
           <Route path="/pmQ" element={<PmQueue />} />
