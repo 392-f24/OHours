@@ -9,12 +9,14 @@ const StudentPage = React.lazy(() =>
 );
 const StaffPage = React.lazy(() => import("./staffLoginPage/staffLoginPage"));
 const LoginPage = React.lazy(() => import("./loginForm/login_form"));
-const StudentSubmitPage = React.lazy(() => import("./studentSubmitPage/studentSubmitPage"));
+const StudentSubmitPage = React.lazy(() =>
+  import("./studentSubmitPage/studentSubmitPage")
+);
 const PmQueue = React.lazy(() => import("./pmQueue/pmQueue"));
 const PmLanding = React.lazy(() => import("./pmLanding/pmLanding"));
 const PmCreateSess = React.lazy(() => import("./createSession/createSession"));
- 
-const FormQueueView = React.lazy(() => import('./formQueue/formQueueView'));
+
+const FormQueueView = React.lazy(() => import("./formQueue/formQueueView"));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -47,7 +49,7 @@ export default function App() {
           <Route path="/student" element={<StudentPage />} />
           <Route path="/staff" element={<LoginForm profile={profile} />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
-          <Route path="/pmQ" element={<PmQueue />} />
+          <Route path="/pmQ/:sessionID" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
           <Route path="/formqueue/:code" element={<FormQueueView />} />

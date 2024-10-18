@@ -3,76 +3,62 @@ import { Card } from "@components/Cards";
 import { CardContent } from "@components/CardContent";
 import { Checkbox } from "@components/Checkbox";
 import { Button } from "@components/Button";
-import { useNavigate } from "react-router-dom";
-
-const mockQueueData = [
-  {
-    id: 1,
-    studentName: "John Doe",
-    priorityNumber: "1",
-    description: "Question about assignment 3",
-    checked: false,
-  },
-  {
-    id: 2,
-    studentName: "Jane Smith",
-    priorityNumber: "2",
-    description: "Needs help with coding problem",
-    checked: false,
-  },
-  {
-    id: 3,
-    studentName: "Bob Johnson",
-    priorityNumber: "3",
-    description: "Discussion about project proposal",
-    checked: false,
-  },
-  {
-    id: 4,
-    studentName: "Alice Brown",
-    priorityNumber: "4",
-    description: "Clarification on exam schedule",
-    checked: false,
-  },
-  {
-    id: 5,
-    studentName: "Charlie Davis",
-    priorityNumber: "5",
-    description: "Issues with installation of tools",
-    checked: false,
-  },
-  {
-    id: 6,
-    studentName: "Emily White",
-    priorityNumber: "6",
-    description: "Help with debugging code",
-    checked: false,
-  },
-  {
-    id: 7,
-    studentName: "Frank Harris",
-    priorityNumber: "7",
-    description: "Discussion about final project topic",
-    checked: false,
-  },
-  {
-    id: 8,
-    studentName: "Grace Lee",
-    priorityNumber: "8",
-    description: "Needs guidance on research paper",
-    checked: false,
-  },
-];
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getSessionDetails,
+  deleteQueueItem,
+  updateQueueItem,
+  setupQueueListener,
+  deleteSession,
+} from "../../firebase/pmSideFunctions";
 
 export default function QueueManagement({ onLogout }) {
+  const { sessionID } = useParams();
   const navigate = useNavigate();
-  const [roomNumber, setRoomNumber] = useState("CS392");
   const [queueItems, setQueueItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [roomNumber, setRoomNumber] = useState("");
 
   useEffect(() => {
-    setQueueItems(mockQueueData);
-  }, []);
+    const fetchData = async () => {
+      const details = await getSessionDetails(sessionID);
+      if (details) {
+        const formattedQueue = Object.entries(details.queue).map(
+          ([id, item]) => ({
+            id,
+            studentName: item.name,
+            description: item.question,
+            checked: false,
+          })
+        );
+        setQueueItems(formattedQueue);
+        setRoomNumber(details.className);
+      } else {
+        console.log("No details found for session ID:", sessionID);
+      }
+    };
+
+    fetchData();
+
+    // Callback function to update local state when Firebase data changes
+    const handleDataUpdate = (data) => {
+      const formattedQueue = Object.entries(data).map(([id, item]) => ({
+        id,
+        studentName: item.name,
+        description: item.question,
+        checked: false,
+      }));
+      setQueueItems(formattedQueue);
+    };
+
+    // Set up the Firebase listener
+    const detachListener = setupQueueListener(sessionID, handleDataUpdate);
+
+    // Cleanup function to remove the listener
+    return () => {
+      detachListener();
+    };
+  }, [sessionID]);
 
   const handleCheckboxChange = (id) => {
     setQueueItems(
@@ -81,7 +67,7 @@ export default function QueueManagement({ onLogout }) {
       )
     );
 
-    //select all
+    // Update select all state based on current items
     const updatedItems = queueItems.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
@@ -99,91 +85,99 @@ export default function QueueManagement({ onLogout }) {
     );
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await deleteSession(sessionID);
     navigate("/");
   };
 
-  // const handleDelete = () => {
-  //   const updatedQueue = queueItems.filter(item => !item.checked);
-  //   setQueueItems(updatedQueue);
-  //   setSelectAll(false);
-  // };
   const handleDelete = () => {
-    //Get checked items
-    const checkedItems = queueItems.filter((item) => item.checked); //Find the one with the highest priority
-    const highestPriorityItem = checkedItems.reduce((highest, item) =>
-      parseInt(item.priorityNumber) < parseInt(highest.priorityNumber)
-        ? item
-        : highest
-    ); //Merge descriptions and names into the highest priority item
-    const mergedNames = checkedItems
-      .filter((item) => item.id !== highestPriorityItem.id)
-      .map((item) => item.studentName)
-      .join(", ");
-    const mergedDescriptions = checkedItems
-      .filter((item) => item.id !== highestPriorityItem.id)
-      .map((item) => item.description)
-      .join(", "); //Update the highest priority item with merged names and descriptions
-    const updatedHighestPriorityItem = {
-      ...highestPriorityItem,
-      studentName: `${highestPriorityItem.studentName}, ${mergedNames}`,
-      description: `${highestPriorityItem.description}, ${mergedDescriptions}`,
-    }; //Now resolve the queue (keep only the highest prioroty one)
-    const updatedQueue = queueItems
-      .map((item) =>
-        item.id === highestPriorityItem.id ? updatedHighestPriorityItem : item
-      )
-      .filter((item) => !item.checked || item.id === highestPriorityItem.id);
+    queueItems.forEach((item) => {
+      if (item.checked) {
+        deleteQueueItem(sessionID, item.id)
+          .then(() => {
+            console.log(`Deleted ${item.id}`);
+          })
+          .catch((error) => {
+            console.error(`Failed to delete ${item.id}:`, error);
+          });
+      }
+    });
+
+    // Filter out the items that were marked for deletion
+    const updatedQueue = queueItems.filter((item) => !item.checked);
     setQueueItems(updatedQueue);
-    const itemsToDelete = checkedItems.filter(
-      (item) => item.id !== highestPriorityItem.id
-    ); //According to schema right nowm we need access to sessionid?
-    const sessionID = "SESSIONID";
-    if (itemsToDelete.length > 0) {
-      deleteQueueItems(
-        sessionID,
-        updatedHighestPriorityItem,
-        itemsToDelete.map((item) => item.id)
-      );
+    setSelectAll(false);
+  };
+
+  const mergeActive = queueItems.filter((item) => item.checked).length > 1;
+
+  const handleMerge = async () => {
+    const selectedItems = queueItems.filter((item) => item.checked);
+    if (selectedItems.length <= 1) {
+      console.log("Not enough items selected to merge");
+      return;
     }
-  }; /* //Backend delete + merge according to current schema draft
-      const deleteQueueItems = async (sessionID, highestPriorityItem, idsToDelete) => {
-        const db = getDatabase(); 
-        const queueRef = ref(db, `sessions/${sessionID}/Queue`);
-        
-        try {
-    
-          //1. 
-          // Merge all names and descriptions into the highest priority item
-          const updatedHighestPriorityItem = {
-            studentName: highestPriorityItem.studentName, // This would already have the merged names
-            q_description: highestPriorityItem.description // Already merged descriptions
-          };
-          
-          //Update highest priority item in Firebase
-          await update(ref(db, `sessions/${sessionID}/Queue/${highestPriorityItem.id}`), updatedHighestPriorityItem);
-    
-          //Remove the non-highest priority items
-          const updates = {};
-          idsToDelete.forEach(id => {
-            updates[id] = null;  
-          });
-          
-          //2. 
-          //Delete non-highest priority items
-          await update(queueRef, updates);
-    
-          //Merged and deleted items in backend 
-    
-        } catch (error) {
-          console.error("Error", error);
-        }
-      };
-      */
+
+    // First item is the base for merging
+    const firstItem = selectedItems[0];
+    const mergedName = selectedItems.map((item) => item.studentName).join(", ");
+    const mergedDescription = selectedItems
+      .map((item) => item.description)
+      .join("; ");
+
+    // Update the first item in the database
+    const updatedFirstItem = {
+      ...firstItem,
+      name: mergedName,
+      question: mergedDescription,
+    };
+    await updateQueueItem(sessionID, firstItem.id, updatedFirstItem);
+
+    // Delete the other selected items from the database
+    const deletePromises = selectedItems
+      .slice(1)
+      .map((item) => deleteQueueItem(sessionID, item.id));
+
+    await Promise.all(deletePromises);
+
+    // Update local state to reflect the merge and deletions
+    setQueueItems((prevItems) => {
+      // Create a new array with all unselected items plus the updated first item
+      const newItems = prevItems
+        .filter((item) => !item.checked || item.id === firstItem.id) // Remove all selected except the first
+        .map((item) => {
+          // Update the first item with merged data
+          if (item.id === firstItem.id) {
+            return updatedFirstItem;
+          }
+          return item;
+        });
+
+      return newItems;
+    });
+
+    await fetchQueueItems();
+  };
+
+  const fetchQueueItems = async () => {
+    const details = await getSessionDetails(sessionID);
+    if (details && details.queue) {
+      const formattedQueue = Object.entries(details.queue).map(
+        ([id, item]) => ({
+          id,
+          studentName: item.name,
+          description: item.question,
+          checked: false,
+        })
+      );
+      setQueueItems(formattedQueue);
+    } else {
+      console.log("No details found for session ID:", sessionID);
+    }
+  };
 
   return (
     <div className="h-[90vh] flex flex-col">
-      {/* Room Section */}
       <div className="p-2 ">
         <Card>
           <CardContent className="flex justify-between items-center">
@@ -191,20 +185,25 @@ export default function QueueManagement({ onLogout }) {
               <div className="text-sm font-semibold mb-1">Room:</div>
               <div className="text-2xl font-bold">{roomNumber}</div>
             </div>
+            <div>
+              <div className="text-sm font-semibold mb-1">Join Code:</div>
+              <div className="text-2xl font-bold">{sessionID}</div>
+            </div>
+
             <Button
               variant="ghost"
               onClick={handleLogout}
               className="flex items-center gap-2"
             >
-              Logout
+              End Session
             </Button>
           </CardContent>
         </Card>
       </div>
 
       {/* Queue Section */}
-      <div className=" w-full h-1/2 flex-1 p-4 flex">
-        <Card className="w-full  flex flex-col">
+      <div className="w-full h-1/2 flex-1 p-4 flex">
+        <Card className="w-full flex flex-col">
           <CardContent className="flex flex-col h-full">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
@@ -232,7 +231,7 @@ export default function QueueManagement({ onLogout }) {
                     <CardContent className="p-3">
                       <div className="flex justify-between items-center mb-2">
                         <div className="font-medium">
-                          {item.studentName} #{item.priorityNumber}
+                          {item.studentName} #{item.id}
                         </div>
                         <Checkbox
                           checked={item.checked}
@@ -255,12 +254,14 @@ export default function QueueManagement({ onLogout }) {
       </div>
 
       {/* Button Section */}
-      <div className="p-4">
+      <div className="p-4 flex">
+        <Button onClick={handleDelete}>Resolve</Button>
+
         <Button
-          onClick={handleDelete}
-          className="fixed bottom-4 left-1/2 transform -translate-x-1/2"
+          onClick={handleMerge}
+          disabled={!mergeActive} // Button is disabled unless two or more items are selected
         >
-          Resolve
+          Merge
         </Button>
       </div>
     </div>

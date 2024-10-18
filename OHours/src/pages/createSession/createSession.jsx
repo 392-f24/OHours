@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@components/Button";
 import { Input } from "@components/Input";
 import BackButton from "@components/back";
-import { db } from "../../firebase/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { createNewSession } from "../../firebase/pmSideFunctions";
 
 export default function CreateSession() {
   const [courseName, setCourseName] = useState("");
@@ -26,15 +25,7 @@ export default function CreateSession() {
 
     // You can handle other processes here, like saving the session to a database, etc.
     try {
-      const sessionData = {
-        queue: {},
-        studentCode: newStudentCode,
-        ClassName: courseName,
-        queueLength: 0,
-      };
-
-      // Set document in the "rooms" collection with the new session ID
-      await setDoc(doc(db, "rooms", newSessionID), sessionData);
+      await createNewSession(newSessionID, newStudentCode, courseName);
 
       console.log("Session successfully created!");
     } catch (error) {

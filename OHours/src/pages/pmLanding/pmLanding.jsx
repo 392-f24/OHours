@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@components/Button";
 import { Input } from "@components/Input";
-import { db } from "../../firebase/firebase"; // Adjust the path as necessary
+import { db } from "../../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { fetchAllActiveSessions } from "../../firebase/pmSideFunctions";
 
 export default function PMLanding() {
   const navigate = useNavigate();
   const [sessionCode, setSessionCode] = useState("");
-  const [activeSessions, setActiveSessions] = useState([]);
 
   const handleCreateSession = () => {
     navigate("/pmCreateSess");
@@ -22,20 +22,16 @@ export default function PMLanding() {
     }
   };
 
+  const [sessions, setSessions] = useState({});
+
   useEffect(() => {
-    const fetchActiveSessions = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "rooms"));
-        const sessions = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setActiveSessions(sessions);
-      } catch (error) {
-        console.error("Error fetching sessions: ", error);
+    fetchAllActiveSessions((data, error) => {
+      if (error) {
+        console.log("Error fetching data:", error);
+        return;
       }
-    };
-    fetchActiveSessions();
+      setSessions(data);
+    });
   }, []);
 
   return (
@@ -59,35 +55,27 @@ export default function PMLanding() {
         </Button>
       </div>
       {/* Active Sessions Table */}
-      <div className="w-full px-8 mt-8">
-        <table className="min-w-full border-collapse border border-gray-200">
+      <div>
+        <h1>Active Sessions</h1>
+        <table>
           <thead>
             <tr>
-              <th className="border border-gray-200 px-4 py-2 text-left">
-                Class Name
-              </th>
-              <th className="border border-gray-200 px-4 py-2 text-left">
-                Session ID
-              </th>
-              <th className="border border-gray-200 px-4 py-2 text-left">
-                Student Code
-              </th>
+              <th>Session ID</th>
+              <th>Class Name</th>
+              <th>PM Code</th>
+              <th>Queue Length</th>
             </tr>
           </thead>
           <tbody>
-            {activeSessions.map((session) => (
-              <tr key={session.id} className="hover:bg-gray-100">
-                <td className="border border-gray-200 px-4 py-2">
-                  {session.ClassName}
-                </td>
-                <td className="border border-gray-200 px-4 py-2">
-                  {session.id}
-                </td>
-                <td className="border border-gray-200 px-4 py-2">
-                  {session.studentCode}
-                </td>
-              </tr>
-            ))}
+            {sessions &&
+              Object.entries(sessions).map(([key, session]) => (
+                <tr key={key}>
+                  <td>{key}</td>
+                  <td>{session.className}</td>
+                  <td>{session.pmCode}</td>
+                  <td>{session.queueLength}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
