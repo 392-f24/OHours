@@ -3,13 +3,11 @@ import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signO
 import { useEffect, useState } from 'react';
 import { app } from './firebase';
 
-const firebase = app;
-
 export const signInWithGoogle = () => {
-  signInWithPopup(getAuth(firebase), new GoogleAuthProvider());
+  signInWithPopup(getAuth(app), new GoogleAuthProvider());
 };
 
-const firebaseSignOut = () => signOut(getAuth(firebase));
+const firebaseSignOut = () => signOut(getAuth(app));
 
 export { firebaseSignOut as signOut };
 
@@ -17,7 +15,7 @@ export const useAuthState = () => {
   const [user, setUser] = useState();
   
   useEffect(() => (
-    onAuthStateChanged(getAuth(firebase), setUser)
+    onAuthStateChanged(getAuth(app), setUser)
   ), []);
 
   return [user];
