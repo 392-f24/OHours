@@ -31,8 +31,8 @@ export default function FormQueueView() {
     // function for updating the queue
     const fetchQueue = async () => {
         try {
-            const fetchedQueue = await getQueue();
-            const classname = await getClassName();
+            const fetchedQueue = await getQueue(code);
+            const classname = await getClassName(code);
             setClassName(classname);
             setQueue(fetchedQueue);
 
@@ -51,7 +51,7 @@ export default function FormQueueView() {
             setNewQuestion(question);
             setNewName(name);
             setOriginalQuestion(question);
-            const id = await addQuestion({'name': name, 'question': question});
+            const id = await addQuestion({'name': name, 'question': question}, code);
             setNewQuestionId(id);
             fetchQueue();
         } catch (error) {
@@ -66,7 +66,7 @@ export default function FormQueueView() {
         try {
             setNewQuestion(question);
             setOriginalQuestion(question);
-            await updateQuestion(newQuestionId, {'name': newName, 'question': question});
+            await updateQuestion(newQuestionId, {'name': newName, 'question': question}, code);
             fetchQueue();
         } catch (error) {
             console.error('Error updating question:', error);
@@ -78,7 +78,7 @@ export default function FormQueueView() {
     const handleLeaveQueue = async () => {
         if (window.confirm("Are you sure you want to leave the queue?")) {
             try {
-                await deleteQuestion(newQuestionId.toString());
+                await deleteQuestion(newQuestionId.toString(), code);
                 fetchQueue();
             } catch (error) {
                 console.error('Error deleting question:', error);
@@ -92,7 +92,7 @@ export default function FormQueueView() {
         <div className="min-h-screen p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6 border border-blue-500 rounded-md p-5">
-                    <div className="text-2xl text-blue-500 font-bold">{className} OH</div>
+                    <div className="text-2xl text-blue-500 font-bold">{className} OH </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Card className="h-[calc(100vh-200px)]">

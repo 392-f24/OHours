@@ -4,18 +4,15 @@ import { getDatabase, ref, get, set, update, remove, increment } from 'firebase/
 // Initialize the database
 const db = getDatabase(app);
 
-
-const sessionPath = 'sessionCode/{code}'
-// Reference to the room
-const roomRef = ref(db, sessionPath);
-
 // Function to pad the ID with leading zeros
 const padId = (id, length = 3) => {
   return id.toString().padStart(length, '0');
 };
 
-export const getClassName = async () => {
+export const getClassName = async (code) => {
+
   try {
+    const roomRef = ref(db, `sessionCode/${code}`);
     const roomSnapshot = await get(roomRef);
     const className = roomSnapshot.val()?.className || {}; 
     return className;
@@ -26,8 +23,9 @@ export const getClassName = async () => {
 }
 
 // Get the full queue (all the questions)
-export const getQueue = async () => {
+export const getQueue = async (code) => {
   try {
+    const roomRef = ref(db, `sessionCode/${code}`);
     const roomSnapshot = await get(roomRef);
     const queue = roomSnapshot.val()?.queue || {}; 
     // Sort the queue entries by their ID
@@ -39,8 +37,9 @@ export const getQueue = async () => {
 };
 
 // Add a new question
-export const addQuestion = async (questionData) => {
+export const addQuestion = async (questionData, code) => {
   try {
+    const roomRef = ref(db, `sessionCode/${code}`);
     const roomSnapshot = await get(roomRef);
     const queueLength = roomSnapshot.val()?.queueLength || 0; 
     const newId = queueLength + 1; 
@@ -57,8 +56,9 @@ export const addQuestion = async (questionData) => {
 };
 
 // Update an existing question
-export const updateQuestion = async (questionId, updatedData) => {
+export const updateQuestion = async (questionId, updatedData, code) => {
   try {
+    const roomRef = ref(db, `sessionCode/${code}`);
     await update(roomRef, {
       [`queue/${questionId}`]: updatedData,
     });
@@ -68,8 +68,9 @@ export const updateQuestion = async (questionId, updatedData) => {
 };
 
 // Delete a question -- maybe use a resolve for pm side too?
-export const deleteQuestion = async (questionId) => {
+export const deleteQuestion = async (questionId, code) => {
   try {
+    const roomRef = ref(db, `sessionCode/${code}`);
     
     remove(ref(db, `${sessionPath}/queue/${questionId}`))
     .then(() => {
