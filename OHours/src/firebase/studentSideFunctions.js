@@ -4,7 +4,8 @@ import { getDatabase, ref, get, set, update, remove, increment } from 'firebase/
 // Initialize the database
 const db = getDatabase(app);
 
-const sessionPath = 'sessionCode/5154'
+
+const sessionPath = 'sessionCode/{code}'
 // Reference to the room
 const roomRef = ref(db, sessionPath);
 

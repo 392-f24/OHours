@@ -50,7 +50,7 @@ export default function App() {
           <Route path="/pmQ" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
-          <Route path="/formqueue" element={<FormQueueView />} />
+          <Route path="/formqueue/:code" element={<FormQueueView />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </React.Suspense>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from '@components/Cards';
 import { CardContent } from '@components/CardContent';
 import SubmitQuestion from './submitQuestion';
@@ -9,6 +9,8 @@ import { getClassName, getQueue, addQuestion, updateQuestion, deleteQuestion } f
 
 export default function FormQueueView() {
     const navigate = useNavigate();
+    const { code } = useParams();
+
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [newQuestionId, setNewQuestionId] = useState(null);
     const [newName, setNewName] = useState('');
@@ -120,7 +122,7 @@ export default function FormQueueView() {
                         queueItems={queue}
                         userQueueItemId={newQuestionId}
                         newName={newName}
-                    />
+                    /> 
                 </div>
             </div>
         </div>

@@ -45,7 +45,7 @@ export default function StudentCodePage() {
           message: "Code verified successfully!",
         });
         // Navigate to the submit page
-        navigate("/formqueue");
+        navigate(`/formqueue/${code}`);
       } else {
         setStatus({
           type: "error",
