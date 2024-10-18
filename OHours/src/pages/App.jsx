@@ -7,7 +7,6 @@ const StudentPage = React.lazy(() =>
 );
 const StaffPage = React.lazy(() => import("./staffLoginPage/staffLoginPage"));
 const LoginPage = React.lazy(() => import("./loginForm/login_form"));
-const WaitRoom = React.lazy(() => import("./waitroom/waitroom"));
 const StudentSubmitPage = React.lazy(() =>
   import("./studentSubmitPage/studentSubmitPage")
 );
