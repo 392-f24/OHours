@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../components/back";
+import { getDatabase, ref, get } from "firebase/database";
+import { app } from '../../firebase/firebase'; // check?
+
+const database = getDatabase(app);
 
 const Alert = ({ children, className, ...props }) => (
   <div role="alert" className={`rounded-lg border p-4 ${className}`} {...props}>
@@ -14,12 +18,17 @@ const AlertDescription = ({ children, className, ...props }) => (
   </div>
 );
 
+// New function to check access code
+const checkAccessCode = async (code) => {
+  const codeRef = ref(database, `sessionCode/${code}`);
+  const snapshot = await get(codeRef);
+  return snapshot.exists();
+};
+
 export default function StudentCodePage() {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
-
-  //added
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,38 +36,29 @@ export default function StudentCodePage() {
     setLoading(true);
     setStatus({ type: "", message: "" });
 
-    // try {
-    //   await studentService.verifyCode(code);
-    //   setStatus({
-    //     type: 'success',
-    //     message: 'Code verified successfully!'
-    //   });
-    //   // Handle successful verification (e.g., show office hours schedule)
-    // } catch (error) {
-    //   setStatus({
-    //     type: 'error',
-    //     message: error.response?.data?.message || 'Invalid code. Please try again.'
-    //   });
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const isValidCode = await checkAccessCode(code);
 
-    // Simulating code verification
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // For demo purposes, we'll just check if the code is not empty
-    if (code.trim() !== "") {
-      setStatus({
-        type: "success",
-        message: "Code verified successfully!",
-      });
-      // Navigate to the submit page
-      navigate("/submit");
-    } else {
+      if (isValidCode) {
+        setStatus({
+          type: "success",
+          message: "Code verified successfully!",
+        });
+        // Navigate to the submit page
+        navigate(`/formqueue/${code}`);
+      } else {
+        setStatus({
+          type: "error",
+          message: "Invalid code. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying code:", error);
       setStatus({
         type: "error",
-        message: "Invalid code. Please try again.",
+        message: "An error occurred. Please try again.",
       });
+    } finally {
       setLoading(false);
     }
   };
