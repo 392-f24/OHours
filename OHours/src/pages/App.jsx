@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useProfile } from "../firebase/profile";
+import LoginForm from "./loginForm/login_form";
 
 const LandingPage = React.lazy(() => import("./landingPage/landingPage"));
 const StudentPage = React.lazy(() =>
@@ -13,8 +15,8 @@ const StudentSubmitPage = React.lazy(() =>
 const PmQueue = React.lazy(() => import("./pmQueue/pmQueue"));
 const PmLanding = React.lazy(() => import("./pmLanding/pmLanding"));
 const PmCreateSess = React.lazy(() => import("./createSession/createSession"));
- 
-const FormQueueView = React.lazy(() => import('./newView/formQueueView'));
+
+const FormQueueView = React.lazy(() => import("./formQueue/formQueueView"));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -35,24 +37,24 @@ const NotFoundPage = () => (
 );
 
 export default function App() {
+  const [profile, profileLoading, profileError] = useProfile();
+  if (profileError) return <h1>Error loading profile: {`${profileError}`}</h1>;
+  if (!profile) return <h1>No profile data</h1>;
+
   return (
     <Router>
       <React.Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/student" element={<StudentPage />} />
-          <Route path="/staff" element={<LoginPage />} />
+          <Route path="/staff" element={<LoginForm profile={profile} />} />
           <Route path="/submit" element={<StudentSubmitPage />} />
           {/* temp path to demo wait room */}
           <Route path="/pmQ" element={<PmQueue />} />
           <Route path="/pmLand" element={<PmLanding />} />
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
- 
+
           <Route path="/formqueue" element={<FormQueueView />} />
-          <Route
-            path="/student/:roomCode/waitroom/:submissionId"
-            element={<WaitRoom />}
-          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </React.Suspense>
