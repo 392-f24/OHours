@@ -15,10 +15,14 @@ export default function FormQueueView() {
     const [newQuestion, setNewQuestion] = useState('');
     const [originalQuestion, setOriginalQuestion] = useState('');
     const [queue, setQueue] = useState([]);
+    
     const roomNumber = "CS 392";
 
     useEffect(() => {
-        fetchQueue();
+        const intervalId = setInterval(() => {
+            fetchQueue();
+        }, 500)
+        return () => clearInterval(intervalId)
     }, []);
 
     const fetchQueue = async () => {
@@ -68,6 +72,7 @@ export default function FormQueueView() {
             navigate('/');
         }
     };
+    
 
     return (
         <div className="min-h-screen p-4">
