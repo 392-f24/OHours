@@ -9,7 +9,7 @@ const firebaseConfig = {
   storageBucket: "ohours.appspot.com",
   messagingSenderId: "558747405743",
   appId: "1:558747405743:web:de6600f44afdbe4c9a335a",
-  measurementId: "G-XXWW390RPS"
+  measurementId: "G-XXWW390RPS",
 };
 
 // Initialize Firebase
@@ -20,4 +20,4 @@ const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 // If you need to export the app or analytics, you can do so like this:
-export { app, db, analytics };
+export { app, db, analytics }; 

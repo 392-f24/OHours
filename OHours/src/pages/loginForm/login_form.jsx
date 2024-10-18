@@ -19,7 +19,7 @@ const LoginForm = () => {
     } else {
       console.log("Login attempt", { username, password });
       alert("Login form submitted");
-      navigate("/pmQ");
+      navigate("/pmLand");
     }
   };
 
