@@ -12,6 +12,9 @@ const PmLanding = React.lazy(() => import('./pmLanding/pmLanding'));
 const PmCreateSess = React.lazy(() => import('./createSession/createSession'));
 
 
+const NewView = React.lazy(() => import('./newView/newView'));
+
+
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
@@ -48,6 +51,7 @@ export default function App() {
           <Route path="/pmCreateSess" element={<PmCreateSess />} />
 
           <Route path="/waitroom" element={<WaitRoom />} />
+          <Route path="/newview" element={<NewView />} />
           <Route path="/student/:roomCode/waitroom/:submissionId" element={<WaitRoom />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
