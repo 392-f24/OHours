@@ -9,4 +9,12 @@ export default defineConfig({
       "@components": "/src/components",
     },
   },
+  test: {
+    environment: 'jsdom',  
+    setupFiles: ["./vitest.setup.js"],
+    globals: true, 
+    coverage: {
+      reporter: ["text", "html"],
+    }
+  },
 });
