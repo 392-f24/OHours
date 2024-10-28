@@ -99,11 +99,11 @@ describe("FormQueueView", () => {
 
     fireEvent.change(questionInput, { target: { value: editedQuestion } });
 
-    screen.debug();
+    // screen.debug();
 
     fireEvent.click(screen.getByRole("button", { name: /Save Changes/i }));
 
-    screen.debug();
+    // screen.debug();
     await waitFor(() => {
       expect(screen.getByText(`${editedQuestion}`)).toBeInTheDocument();
       expect(screen.queryByText(initialQuestion)).not.toBeInTheDocument();
