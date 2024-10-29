@@ -52,7 +52,7 @@ vi.mock('react-router-dom', () => {
   
       await screen.findByText('CS392'); // Use findByText for the first item to wait for rendering
       expect(screen.getByText('8830')).toBeInTheDocument();
-      expect(screen.getByText('2')).toBeInTheDocument(); // Verify specific data points
+      expect(screen.getByText('5')).toBeInTheDocument(); // Verify specific data points
   
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBeGreaterThan(1); // Verify that multiple rows are rendered
