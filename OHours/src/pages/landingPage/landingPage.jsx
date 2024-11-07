@@ -6,8 +6,8 @@ export default function LandingPage() {
   return (
     <div className="w-[90%] h-[95vh] mx-auto my-[2.5vh] bg-gray-50 flex flex-col justify-between p-6 border border-gray-300">
       <div className="w-full bg-blue-100 rounded-lg p-10 sm:p-40 border border-gray-200">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-blue-800 text-left">
-          Welcome to OHours!
+        <h1 className="text-4xl sm:text-6xl font-bold mb-3 text-blue-900 text-left">
+          Welcome to <span className="text-blue-600">OHours</span>
         </h1>
         <p className="text-xl sm:text-2xl text-blue-600 text-left">
           Office Hours scheduling made easy
