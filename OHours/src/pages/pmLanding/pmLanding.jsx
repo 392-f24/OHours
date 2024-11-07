@@ -1,23 +1,20 @@
+// PMLanding.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@components/Button";
 import { Input } from "@components/Input";
 import BackButton from "@components/back";
-
-import { db } from "../../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { Card } from "@components/Cards";
+import { CardContent } from "@components/CardContent";
 import { fetchAllActiveSessions } from "../../firebase/pmSideFunctions";
 import { useDbData } from "../../firebase/firebaseDb";
+import CreateSession from "../createSession/createSession";
 
 export default function PMLanding() {
   const navigate = useNavigate();
   const [sessionCode, setSessionCode] = useState("");
   const [sessions, setSessions] = useState({});
   const [PMSessions, error] = useDbData("pmToSession");
-
-  const handleCreateSession = () => {
-    navigate("/pmCreateSess");
-  };
 
   const handleJoinSession = () => {
     console.log(PMSessions, sessions);
@@ -41,59 +38,74 @@ export default function PMLanding() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center space-y-6 bg-gray-100">
-      <div className="w-full flex justify-start mb-6">
-        <BackButton />
-      </div>
-      {/* Create New Session Button */}
-      <Button
-        onClick={handleCreateSession}
-        className="px-6 py-3 text-lg bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-      >
-        Create New Session
-      </Button>
+    <div className="min-h-screen p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex col">
+          <BackButton/>
+          <div className="w-full mb-2 sm:mb-6 border border-blue-500 rounded-md p-2 sm:p-5">
+            <div className="text-2xl text-blue-500 font-bold">
+              Welcome, PMs!
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <CreateSession />
 
-      {/* Join Existing Session Section */}
-      <div className="flex items-center space-x-4">
-        <Input
-          type="text"
-          value={sessionCode}
-          onChange={(e) => setSessionCode(e.target.value)}
-          placeholder="Enter session code"
-          className="px-4 py-2 text-lg border border-gray-300 rounded w-60"
-        />
-        <Button
-          onClick={handleJoinSession}
-          className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-        >
-          Join Session
-        </Button>
-      </div>
+          {/* Join Session Card */}
+          <Card className="h-full">
+            <CardContent className="p-4">
+              <div className="space-y-4">
+                <div className="text-xl font-semibold">Join Session</div>
+                <div className="flex flex-col gap-4 w-full">
+                  <Input
+                    type="text"
+                    value={sessionCode}
+                    onChange={(e) => setSessionCode(e.target.value)}
+                    placeholder="Enter session code"
+                    className="flex-1 px-4 py-2 text-lg border border-gray-300 rounded"
+                  />
+                  <Button
+                    onClick={handleJoinSession}
+                    className="w-full px-6 py-2 text-lg bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+                  >
+                    Join
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Active Sessions Table */}
-      <div>
-        <h1 className="text-2xl font-bold mb-4 text-center">Active Sessions</h1>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border px-4 py-2 bg-gray-200">Session ID</th>
-              <th className="border px-4 py-2 bg-gray-200">Class Name</th>
-              <th className="border px-4 py-2 bg-gray-200">PM Code</th>
-              <th className="border px-4 py-2 bg-gray-200">Queue Length</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sessions &&
-              Object.entries(sessions).map(([key, session]) => (
-                <tr key={key} className="odd:bg-white even:bg-gray-100">
-                  <td className="border px-4 py-2">{key}</td>
-                  <td className="border px-4 py-2">{session.className}</td>
-                  <td className="border px-4 py-2">{session.pmCode}</td>
-                  <td className="border px-4 py-2">{session.queueLength}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        {/* Bottom card with Active Sessions table */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-xl font-semibold mb-4">Active Sessions</div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2 bg-gray-50 text-left">Session ID</th>
+                    <th className="border px-4 py-2 bg-gray-50 text-left">Class Name</th>
+                    <th className="border px-4 py-2 bg-gray-50 text-left">PM Code</th>
+                    <th className="border px-4 py-2 bg-gray-50 text-left">Queue Length</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions &&
+                    Object.entries(sessions).map(([key, session]) => (
+                      <tr key={key} className="hover:bg-gray-50">
+                        <td className="border px-4 py-2">{key}</td>
+                        <td className="border px-4 py-2">{session.className}</td>
+                        <td className="border px-4 py-2">{session.pmCode}</td>
+                        <td className="border px-4 py-2">{session.queueLength}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
