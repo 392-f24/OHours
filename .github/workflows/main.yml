@@ -6,23 +6,11 @@ jobs:
   build:
     name: Build and unit test
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: ./Ohours  # Set default working directory for all run steps
-        
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-node@v4
         with:
           node-version: '21'
-          
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Build
-        run: npm run build --if-present
-        
-      - name: Test
-        run: npm test
+      - run: npm install
+      - run: npm run build --if-present
+      - run: npm test
