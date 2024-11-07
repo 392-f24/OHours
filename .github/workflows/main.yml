@@ -11,9 +11,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm install
-        working-directory: ./OHours
+      - run: npm instal
       - run: npm run build --if-present
-        working-directory: ./OHours
       - run: npm test
-        working-directory: ./OHours
