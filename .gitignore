@@ -103,7 +103,9 @@ stats.html
 
 .firebase  
 
-src/firebase/firebase.js
+# src/firebase/firebase.js
 
 node_modules/
 package-lock.json
+
+.env
