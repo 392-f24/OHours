@@ -102,10 +102,13 @@ stats.html
 .eslintcache
 
 .firebase  
- 
+
+# src/firebase/firebase.js 
+
 node_modules/
 
 dist
  
 package-lock.json
-OHours/package-lock.json
+
+.env
