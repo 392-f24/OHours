@@ -37,7 +37,7 @@ export default function LandingPage() {
       </div>
 
       <div className="text-sm text-gray-500 mt-4 text-center">
-        Created by Team Navy (Lian, Soham, Janna, Jonny, Terry)
+        {/* Created by Team Navy (Lian, Soham, Janna, Jonny, Terry) */}
       </div>
     </div>
   );
