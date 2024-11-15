@@ -9,6 +9,7 @@ import {
   deleteQuestion,
 } from "../src/firebase/studentSideFunctions";
 
+// Mocking Firebase functions
 vi.mock("../src/firebase/studentSideFunctions", () => ({
   getQueue: vi.fn(),
   addQuestion: vi.fn(),
@@ -17,95 +18,88 @@ vi.mock("../src/firebase/studentSideFunctions", () => ({
   getClassName: vi.fn(),
 }));
 
+// Utility function to render component
+const renderComponent = () =>
+  render(
+    <BrowserRouter>
+      <FormQueueView />
+    </BrowserRouter>
+  );
+
 describe("FormQueueView", () => {
-  it("should display original Question after submitting a question, allow editing, and cancel edit", async () => {
+  it("should display the original question after submission, allow editing, and cancel edit", async () => {
     const initialQuestion = "What is the capital of France?";
     const editedQuestion = "What is the capital of Spain?";
 
+    // Mock API responses
     addQuestion.mockResolvedValue("1");
     deleteQuestion.mockResolvedValue();
     getQueue.mockResolvedValue([
       { id: "1", name: "Student", question: initialQuestion },
     ]);
 
-    render(
-      <BrowserRouter>
-        <FormQueueView />
-      </BrowserRouter>
-    );
+    renderComponent();
 
-    const textboxes = screen.getAllByRole("textbox");
-    const nameInput = textboxes[0];
-    const questionInput = textboxes[1];
-
+    // Fill out the form and submit
+    const [nameInput, questionInput] = screen.getAllByRole("textbox");
     fireEvent.change(nameInput, { target: { value: "Student" } });
-
     fireEvent.change(questionInput, { target: { value: initialQuestion } });
-
     fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
 
+    // Verify question is displayed
     await waitFor(() => {
-      expect(screen.getByText(`${initialQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(initialQuestion)).toBeInTheDocument();
     });
 
+    // Edit question and cancel
     fireEvent.click(screen.getByRole("button", { name: /edit question/i }));
-
     fireEvent.change(questionInput, { target: { value: editedQuestion } });
-
     fireEvent.click(screen.getByRole("button", { name: /cancel edit/i }));
 
+    // Verify original question remains unchanged
     await waitFor(() => {
-      expect(screen.getByText(`${initialQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(initialQuestion)).toBeInTheDocument();
       expect(screen.queryByText(editedQuestion)).not.toBeInTheDocument();
     });
   });
-});
 
-describe("FormQueueView", () => {
-  it("should display edited Question after submitting a question, allow editing, and submit", async () => {
+  it("should display the edited question after submission and editing", async () => {
     const initialQuestion = "What is the capital of France?";
     const editedQuestion = "What is the capital of Spain?";
 
+    // Mock API responses
     addQuestion.mockResolvedValue("1");
     deleteQuestion.mockResolvedValue();
-    getQueue.mockResolvedValueOnce([
-      { id: "1", name: "Student", question: initialQuestion },
-    ]);
+    getQueue
+      .mockResolvedValueOnce([
+        { id: "1", name: "Student", question: initialQuestion },
+      ])
+      .mockResolvedValueOnce([
+        { id: "1", name: "Student", question: editedQuestion },
+      ]);
     updateQuestion.mockResolvedValueOnce();
-    getQueue.mockResolvedValueOnce([
-      { id: "1", name: "Student", question: editedQuestion },
-    ]);
 
-    render(
-      <BrowserRouter>
-        <FormQueueView />
-      </BrowserRouter>
-    );
+    renderComponent();
 
-    const textboxes = screen.getAllByRole("textbox");
-    const nameInput = textboxes[0];
-    const questionInput = textboxes[1];
-
+    // Fill out the form and submit
+    const [nameInput, questionInput] = screen.getAllByRole("textbox");
     fireEvent.change(nameInput, { target: { value: "Student" } });
-
     fireEvent.change(questionInput, { target: { value: initialQuestion } });
-
     fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
 
+    // Verify question is displayed
     await waitFor(() => {
-      expect(screen.getByText(`${initialQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(initialQuestion)).toBeInTheDocument();
     });
+
+    // Edit question and save
     fireEvent.click(screen.getByRole("button", { name: /edit question/i }));
-
     fireEvent.change(questionInput, { target: { value: editedQuestion } });
+    fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
 
-    screen.debug();
-
-    fireEvent.click(screen.getByRole("button", { name: /Save Changes/i }));
-
-    screen.debug();
+    // Verify edited question is displayed
     await waitFor(() => {
-      expect(screen.getByText(`${editedQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(editedQuestion)).toBeInTheDocument();
       expect(screen.queryByText(initialQuestion)).not.toBeInTheDocument();
     });
   });

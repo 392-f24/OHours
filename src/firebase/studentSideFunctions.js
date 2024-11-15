@@ -70,13 +70,11 @@ export const updateQuestion = async (questionId, updatedData, code) => {
 // Delete a question -- maybe use a resolve for pm side too?
 export const deleteQuestion = async (questionId, code) => {
   try {
-    const roomRef = ref(db, `sessionCode/${code}`);
-    
-    remove(ref(db, `${sessionPath}/queue/${questionId}`))
-    .then(() => {
-      console.log(`success! ${questionId} deleted`)
-    })
-    .catch((error) => console.log(error));
+    const sessionPath = `sessionCode/${code}/queue/${questionId}`;
+    const questionRef = ref(db, sessionPath);
+
+    await remove(questionRef);
+    console.log(`success! ${questionId} deleted`);
   } catch (error) {
     console.error('Error deleting question:', error);
     throw error;

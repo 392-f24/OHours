@@ -10,7 +10,6 @@ import {
 } from "firebase/database"; // Ensure you have these imports
 
 import { useDbData } from "./firebaseDb";
-
 export const createNewSession = async (
   newSessionID,
   newStudentCode,
