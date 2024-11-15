@@ -60,103 +60,103 @@ describe("FormQueueView", () => {
   });
 
 
-  // it("when a student clicks leave the queue button + confirm, they are sent back to the home page and removed from the queue", async () => {
-  //   const newQuestion = "how to do question 2?";
-  //   const newStudent = "bobby";
-  //   const existingStudents = [
-  //     { id: "1", name: "Alice", question: "Help with assignment" },
-  //     { id: "2", name: "Bob", question: "Clarify lecture notes" },
-  //     { id: "3", name: newStudent, question: newQuestion },
-  //   ];
+  it("when a student clicks leave the queue button + confirm, they are sent back to the home page and removed from the queue", async () => {
+    const newQuestion = "how to do question 2?";
+    const newStudent = "bobby";
+    const existingStudents = [
+      { id: "1", name: "Alice", question: "Help with assignment" },
+      { id: "2", name: "Bob", question: "Clarify lecture notes" },
+      { id: "3", name: newStudent, question: newQuestion },
+    ];
   
-  //   // Mock the necessary functions
-  //   addQuestion.mockResolvedValue("3");
-  //   getQueue.mockResolvedValue(existingStudents);
-  //   deleteQuestion.mockResolvedValue();
-  //   const navigateMock = vi.fn();
-  //   vi.spyOn(router, "useNavigate").mockReturnValue(navigateMock);
+    // Mock the necessary functions
+    addQuestion.mockResolvedValue("3");
+    getQueue.mockResolvedValue(existingStudents);
+    deleteQuestion.mockResolvedValue();
+    const navigateMock = vi.fn();
+    vi.spyOn(router, "useNavigate").mockReturnValue(navigateMock);
   
-  //   // Render the component
-  //   render(
-  //     <BrowserRouter>
-  //       <FormQueueView />
-  //     </BrowserRouter>
-  //   );
+    // Render the component
+    render(
+      <BrowserRouter>
+        <FormQueueView />
+      </BrowserRouter>
+    );
   
-  //   // Fill in the form and submit
-  //   const textboxes = screen.getAllByRole("textbox");
-  //   const nameInput = textboxes[0];
-  //   const questionInput = textboxes[1];
-  //   fireEvent.change(nameInput, { target: { value: newStudent } });
-  //   fireEvent.change(questionInput, { target: { value: newQuestion } });
-  //   fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
+    // Fill in the form and submit
+    const textboxes = screen.getAllByRole("textbox");
+    const nameInput = textboxes[0];
+    const questionInput = textboxes[1];
+    fireEvent.change(nameInput, { target: { value: newStudent } });
+    fireEvent.change(questionInput, { target: { value: newQuestion } });
+    fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
   
-  //   // Wait for the queue to be updated
-  //   await waitFor(() => {
-  //     expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
-  //     expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
-  //     expect(screen.getByText("Alice")).toBeInTheDocument();
-  //     expect(screen.getByText("Bob")).toBeInTheDocument();
-  //   });
+    // Wait for the queue to be updated
+    await waitFor(() => {
+      expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+      expect(screen.getByText("Bob")).toBeInTheDocument();
+    });
   
-  //   window.confirm = vi.fn().mockReturnValue(true);
-  //   fireEvent.click(screen.getByRole("button", { name: /leave queue/i }));
+    window.confirm = vi.fn().mockReturnValue(true);
+    fireEvent.click(screen.getByRole("button", { name: /leave queue/i }));
   
-  //   await waitFor(() => {
-  //     expect(navigateMock).toHaveBeenCalled();
-  //     expect(deleteQuestion).toHaveBeenCalled();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalled();
+      expect(deleteQuestion).toHaveBeenCalled();
+    });
+  });
 
-  // it("when a student clicks leave the queue button + cancel, they remain on the page and nothing is changed", async () => {
-  //   vi.resetAllMocks();
-  //   const newQuestion = "how to do question 2?";
-  //   const newStudent = "bobby";
-  //   const existingStudents = [
-  //     { id: "1", name: "Alice", question: "Help with assignment" },
-  //     { id: "2", name: "Bob", question: "Clarify lecture notes" },
-  //     { id: "3", name: newStudent, question: newQuestion },
-  //   ];
+  it("when a student clicks leave the queue button + cancel, they remain on the page and nothing is changed", async () => {
+    vi.resetAllMocks();
+    const newQuestion = "how to do question 2?";
+    const newStudent = "bobby";
+    const existingStudents = [
+      { id: "1", name: "Alice", question: "Help with assignment" },
+      { id: "2", name: "Bob", question: "Clarify lecture notes" },
+      { id: "3", name: newStudent, question: newQuestion },
+    ];
   
-  //   // Mock the necessary functions
-  //   addQuestion.mockResolvedValue("3");
-  //   getQueue.mockResolvedValue(existingStudents);
-  //   deleteQuestion.mockResolvedValue(existingStudents);
-  //   const navigateMock = vi.fn();
-  //   vi.spyOn(router, "useNavigate").mockReturnValue(navigateMock);
+    // Mock the necessary functions
+    addQuestion.mockResolvedValue("3");
+    getQueue.mockResolvedValue(existingStudents);
+    deleteQuestion.mockResolvedValue(existingStudents);
+    const navigateMock = vi.fn();
+    vi.spyOn(router, "useNavigate").mockReturnValue(navigateMock);
   
-  //   // Render the component
-  //   render(
-  //     <BrowserRouter>
-  //       <FormQueueView />
-  //     </BrowserRouter>
-  //   );
+    // Render the component
+    render(
+      <BrowserRouter>
+        <FormQueueView />
+      </BrowserRouter>
+    );
   
-  //   // Fill in the form and submit
-  //   const textboxes = screen.getAllByRole("textbox");
-  //   const nameInput = textboxes[0];
-  //   const questionInput = textboxes[1];
-  //   fireEvent.change(nameInput, { target: { value: newStudent } });
-  //   fireEvent.change(questionInput, { target: { value: newQuestion } });
-  //   fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
+    // Fill in the form and submit
+    const textboxes = screen.getAllByRole("textbox");
+    const nameInput = textboxes[0];
+    const questionInput = textboxes[1];
+    fireEvent.change(nameInput, { target: { value: newStudent } });
+    fireEvent.change(questionInput, { target: { value: newQuestion } });
+    fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
   
-  //   // Wait for the queue to be updated
-  //   await waitFor(() => {
-  //     expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
-  //     expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
-  //     expect(screen.getByText("Alice")).toBeInTheDocument();
-  //     expect(screen.getByText("Bob")).toBeInTheDocument();
-  //   });
+    // Wait for the queue to be updated
+    await waitFor(() => {
+      expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+      expect(screen.getByText("Bob")).toBeInTheDocument();
+    });
     
-  //   window.confirm = vi.fn().mockReturnValue(false);
-  //   fireEvent.click(screen.getByRole("button", { name: /leave queue/i }));
+    window.confirm = vi.fn().mockReturnValue(false);
+    fireEvent.click(screen.getByRole("button", { name: /leave queue/i }));
     
   
-  //   await waitFor(() => {
-  //     expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
-  //     expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
-  //     expect(navigateMock).not.toHaveBeenCalled();
-  //     expect(deleteQuestion).not.toHaveBeenCalled();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(screen.getByText(`${newQuestion}`)).toBeInTheDocument();
+      expect(screen.getByText(`${newStudent}`)).toBeInTheDocument();
+      expect(navigateMock).not.toHaveBeenCalled();
+      expect(deleteQuestion).not.toHaveBeenCalled();
+    });
+  });
 });

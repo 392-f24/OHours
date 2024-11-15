@@ -32,52 +32,66 @@ vi.mock("../src/firebase/studentSideFunctions", () => ({
 
 describe("Leave Queue Functionality", () => {
   const mockNavigate = vi.fn();
+  const questionId = "test-question-id";
+  const testStudent = "Test Student";
+  const testQuestion = "Test Question";
 
   beforeEach(() => {
     vi.clearAllMocks();
-    router.useNavigate.mockImplementation(() => mockNavigate);
-    window.confirm = vi.fn(() => true); // Mock confirm to always return true
+    vi.spyOn(router, "useNavigate").mockReturnValue(mockNavigate);
+    window.confirm = vi.fn(() => true);
+
+    // First simulate adding a question
+    addQuestion.mockResolvedValue(questionId);
     
-    // Setup basic mock implementations
-    getQueue.mockResolvedValue([]);
+    // Then setup the queue state
+    getQueue.mockResolvedValue([
+      {
+        id: questionId,
+        name: testStudent,
+        question: testQuestion
+      }
+    ]);
+
     getClassName.mockResolvedValue("Test Class");
     deleteQuestion.mockResolvedValue();
   });
 
   it("removes student from queue and navigates to home when leave button is clicked", async () => {
-    // Setup: Mock adding a question to get into the queue first
-    const questionId = "test-question-id";
-    addQuestion.mockResolvedValueOnce(questionId);
-
+    // Render the component
     render(
       <BrowserRouter>
         <FormQueueView />
       </BrowserRouter>
     );
 
-    // First submit a question to get into the queue
-    const nameInput = screen.getByPlaceholderText(/enter your name/i);
-    const questionInput = screen.getByPlaceholderText(/enter your question/i);
-    
-    fireEvent.change(nameInput, { target: { value: "Test Student" } });
-    fireEvent.change(questionInput, { target: { value: "Test Question" } });
-    
-    const submitButton = screen.getByText(/submit/i);
-    fireEvent.click(submitButton);
+    // Fill in the form and submit
+    const textboxes = screen.getAllByRole("textbox");
+    const nameInput = textboxes[0];
+    const questionInput = textboxes[1];
+    fireEvent.change(nameInput, { target: { value: testStudent } });
+    fireEvent.change(questionInput, { target: { value: testQuestion } });
+    fireEvent.click(screen.getByRole("button", { name: /submit question/i }));
 
-    // Wait for the question to be added
+    // Wait for the queue to be populated
     await waitFor(() => {
-      expect(addQuestion).toHaveBeenCalled();
+      expect(screen.getByText(testStudent)).toBeInTheDocument();
+      expect(screen.getByText(testQuestion)).toBeInTheDocument();
     });
 
-    // Now click the leave queue button
-    const leaveButton = screen.getByText(/leave queue/i);
+    // Find and click the leave button
+    const leaveButton = screen.getByRole("button", { name: /leave queue/i });
     fireEvent.click(leaveButton);
 
     // Verify the expected behaviors
     await waitFor(() => {
+      // Verify confirmation dialog was shown
+      expect(window.confirm).toHaveBeenCalledWith(
+        "Are you sure you want to leave the queue?"
+      );
+      
       // Verify the question was deleted from Firebase
-      expect(deleteQuestion).toHaveBeenCalledWith(questionId.toString(), "testCode");
+      expect(deleteQuestion).toHaveBeenCalledWith(questionId, "testCode");
       
       // Verify navigation to home page occurred
       expect(mockNavigate).toHaveBeenCalledWith("/");
