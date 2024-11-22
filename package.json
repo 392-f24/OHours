@@ -10,7 +10,11 @@
     "preview": "vite preview",
     "start": "vite",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "em:start": "firebase emulators:start --import=./saved-data --export-on-exit",
+    "em:exec": "firebase emulators:exec --import=./saved-data 'npm start'",
+    "em:execui": "firebase emulators:exec --ui --import=./saved-data 'npm start'",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -32,6 +36,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/coverage-v8": "^2.1.3",
     "autoprefixer": "^10.4.20",
+    "cypress": "^13.16.0",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
